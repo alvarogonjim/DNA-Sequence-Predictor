@@ -9,19 +9,58 @@
 """
 Libraries necessary to run this file alone.
 """
-import numpy as np
-import os 
-import glob
-import pandas as pd
+import os # for the path
+import glob # for finding files
+import pandas as pd # for construct the data
 
+# TO DELETE
 pd.set_option('display.max_rows', None)
 pd.set_option('display.max_columns', None)
 pd.set_option('display.width', None)
 pd.set_option('display.max_colwidth', -1)
+# TO DELETE
 
-# def split_train_valid():
+def read_data(name, title=""):
+    """
+    Read the csv files in the format given on kaggle
+    @param: name: string - path + generic names of the files to read
+            title: string - title of the data. Default empty
+    """
+    files = glob.glob(name+"[0-9].csv")
+    data = pd.DataFrame()
+    for i in files:
+        data = pd.concat([data, pd.read_csv(i,index_col=0)])
+    print("Load " + str(data.shape[0]) + " " + title + ".")
+    return data
 
-def read_data(folder="data/",shuffle=True,valid=33):
+
+def split_train_valid(data,valid,shuffle=True):
+    """
+    Split the data in training and validation set
+    @param: data: panda dataframe - data to split
+            valid: int - split the data according this percent
+            shuffle: bool - whether or not to shuffle the data. Default = True
+    """
+    if ((valid > 0) and (valid<100)):
+        print("Split data in training set (" + str(100-valid) + "%)" \
+               + " and validation set (" + str(valid) + "%)", end="")
+        if shuffle:
+            print(" after shuffling.")
+            validation_set = data.sample(frac=valid/100) #, random_state=seed)
+            train_set = data.drop(validation_set.index)
+        else:
+            print(".")
+            l = data.shape[0]
+            validation_set = data.iloc[int(l-valid*l/100):,:]
+            train_set = data.drop(validation_set.index)
+        print("Final train set: " + str(train_set.shape[0]))
+        print("Final validation set: " + str(validation_set.shape[0]))
+    else:
+        print("Error: split percents number is not valid. It should an integer" \
+                + " between >0 and <100. Given: " + valid)
+    return train_set, validation_set
+
+def get_data_set(folder="data/",shuffle=True,valid=33):
     """
     Read data in the format given for the Kaggle challenge and
     return the train, validation and test set.
@@ -39,43 +78,20 @@ def read_data(folder="data/",shuffle=True,valid=33):
     dir_path = os.path.dirname(os.path.realpath(__file__))
 
     # Get training data set
-    xtrfiles = glob.glob(dir_path+"/"+folder+"Xtr[0-9].csv")
-    train_set = pd.DataFrame()
-    for i in xtrfiles:
-        train_set = pd.concat([train_set, pd.read_csv(i,index_col=0)])
-    # print("Load " + str(train_set['Id'].count()) + " training data.")
-
-    # print(train_set.count(['seq']))
+    train_set = read_data(dir_path+"/"+folder+"Xtr", "training data")
 
     # Split training data set and validation data set
-    if ((valid > 0) and (valid<100)):
-        print("Split data in training set (" + str(100-valid) + "%)" \
-               + " and validation set (" + str(valid) + "%)", end="")
-        if shuffle:
-            print(" after shuffling.")
-            # train_set_copy = train_set.copy()
-            valid_set = train_set.sample(frac=valid/100) #, random_state=seed)
-            # print(str(valid_set['Id'].count()))
-            
-            # print(str(train_set['Id'].count()))
-            train_set.drop(valid_set.index, inplace=True)
-            # print(train_set.head())
-            # train_set = train_set.drop([2])
-            # print(train_set)
-            # print(np.sort(valid_set.index))
-            # print(train_set['Id'].count())
-            # print(train_set.index)
-            # valid_mask = np.random.rand(len(train_set)) < valid / 100
-            # valid_set = train_set[valid_mask]
-            # train_set = train_set[~valid_mask]
-        else:
-            print(".")
-            pass
-        
-    # print(str(train_set['Id'].count()))
+    train_set, validation_set = split_train_valid(train_set,valid,False)
 
+    # Get test data set
+    test_set = read_data(dir_path+"/"+folder+"Xte", "test data")
+
+    # Get label
+    label = read_data(dir_path+"/"+folder+"Ytr", "label")
+
+    return train_set, validation_set, test_set, label
 
 ############ Main ############
 ''' If the file is executed separetely '''
 if __name__ == "__main__":
-    read_data()
+    get_data_set()
