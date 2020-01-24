@@ -90,8 +90,8 @@ class SVM(object):
         # Components for quadratic program problem
         P = cvxopt.matrix(np.outer(y, y) * Gram)
         q = cvxopt.matrix(-np.ones((num_obs, 1)))
-        A = cvxopt.matrix(y, (1, num_obs), 'd')
-        b = cvxopt.matrix(np.zeros(1))
+        A = cvxopt.matrix(y, (1, num_obs), 'd') # 6000 x 1024 , (1,6000)
+        b = cvxopt.matrix(np.zeros(1)) # 0
         diag = np.diag(np.ones(num_obs) * -1)
         identity = np.identity(num_obs)
         G = cvxopt.matrix(np.vstack((diag, identity)))
