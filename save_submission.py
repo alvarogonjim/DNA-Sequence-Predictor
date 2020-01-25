@@ -18,6 +18,7 @@ def reverse_predictions(test_predictions):
     Reverse prediction to don't show on the leaderboard our best result
     @param: test_predictions: numpy array - predictions
     """
+    print("Reverse predictions.")
     return ~test_predictions+2
 ### TO DELETE
 
@@ -26,6 +27,7 @@ def post_procesing(test_predictions):
     Post processing of the data after taining and before submitted.
     @param: test_predictions: numpy array - predictions
     """
+    print("Post precessing predictions.")
     return test_predictions # nothing to do
 
 def save_submission(test_predictions, title=""):
@@ -36,9 +38,10 @@ def save_submission(test_predictions, title=""):
     """
     test_predictions = pd.DataFrame({"Bound": test_predictions}) # convert in pandas df
     test_predictions.index.name = 'Id'
-    test_predictions = reverse_predictions(test_predictions) # TO DELETE
     test_predictions = post_procesing(test_predictions)
+    # test_predictions = reverse_predictions(test_predictions) # TO DELETE
     test_predictions.to_csv("Yte_"+title+".csv", sep=",", encoding="utf-8", index=True)
+    print("Prediction saved.")
 
 ############ Main ############
 ''' If the file is executed separetely '''

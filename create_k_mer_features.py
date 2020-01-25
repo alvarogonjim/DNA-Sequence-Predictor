@@ -7,9 +7,10 @@
 
 def apply_k_mer_features(data, features, out_print=""):
     """
-    Apply k-mer features to the data. It constructs the binary matrix of size 
-    len(data) x len(features). Each cell say whether the sequence 'i' contain 
-    the k-mer 'j' (1) or not (0).
+    Apply k-mer features to the data. It constructs the distribution matrix of 
+    size len(data) x len(features). Each cell say how many times
+    the sequence 'i' contains the k-mer 'j' normalized by the number of 
+    occurences over the sequences.
     @param: data: pandas dataframe - data on whcih we apply the k-mer features
             letters: list of characters - avalaible letter
             features: list of string - full list of k-mer = label in the matrix
@@ -19,9 +20,11 @@ def apply_k_mer_features(data, features, out_print=""):
     for i in features:
         c += 1
         print(out_print + str(round(c*100/len(features),3)) + "%", end="\r")
-        data[i] = data.seq.apply(lambda x: i in x)*1
+        data[i] = data.seq.str.count(i) # count occurences
     print("")
     data = data.drop("seq", axis=1) 
+    data=(data-data.mean())/data.std() # normalization
+    # data=(data-data.min())/(data.max()-data.min()) # normalization
     return data
 
 def list_all_k_mer(features, letters, feature, n, k, init_k):

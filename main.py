@@ -24,7 +24,7 @@ import matplotlib.pyplot as plt # for plots
 ''' Parameters to tuned following, the problem, the data and the understanding
 of the project '''
 k = 5 # the length of the k-mer
-epochs = 9 # number of epochs to train the model
+epochs = 6000 # number of epochs to train the model
 
 ############ Get data set ############
 ''' Get train, validation, test set and label from given data 
@@ -33,11 +33,11 @@ from get_data_set import get_data_set
 
 print("****** LOADING DATA ******")
 train_set, validation_set, test_set, label = get_data_set()
-print("****** DATA LOADED ******\n")
 
-print("Train set (" + str(train_set.shape[0]) + "), validation set (" \
+print("\n Train set (" + str(train_set.shape[0]) + "), validation set (" \
         + str(validation_set.shape[0]) + "), test set (" + str(test_set.shape[0]) \
         + ") and label (" + str(label.shape[0]) + ") loaded.")
+print("****** DATA LOADED ******\n")
 
 
 ############ Create features ############
@@ -54,11 +54,13 @@ print("****** FEATURES CREATED ******\n")
 ''' Train the model using logistic regression '''
 from models import logistic_regression_model
 from models import SVM
+from models import gaussian_process_clissifier
 from kernels import linear_kernel, rbf_kernel, polynomial_kernel
 
 print("****** TRAINING ******")
 # model = logistic_regression_model(epochs)
-model = SVM(rbf_kernel, 0.1)
+# model = SVM(rbf_kernel, 0.1)
+model = gaussian_process_clissifier()
 model.train(train_set, validation_set, label, plots=True)
 model.save()
 print("****** TRAINING ******\n")
@@ -68,6 +70,7 @@ print("****** TRAINING ******\n")
 from save_submission import save_submission
 
 print("****** PREDICT ON TEST SET AND SAVE RESULT ******")
+print("Final predictions.")
 test_predictions = model.predict(np.array(test_set))
 save_submission(test_predictions, "GONZALEZ_LAURENDEAU_kaggle_submission")
 print("****** PREDICT ON TEST SET AND SAVE RESULT ******\n")
