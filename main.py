@@ -15,9 +15,7 @@ Thus, the rules say that external machine learning libraries are forbidden, and
 so we limit ourself to use only common libraries in python as following.
 We have the right to work with some linear algebra and optimization libraries.
 """
-import io; import sys # for write output in log file
-out_console = io.StringIO()
-f = open("log.txt", "w")
+
 import numpy as np # for arrays tricks
 import os ; import glob; import pandas as pd # for read the data
 import matplotlib.pyplot as plt # for plots
@@ -26,6 +24,7 @@ import matplotlib.pyplot as plt # for plots
 ''' Parameters to tuned following, the problem, the data and the understanding
 of the project '''
 k = 5 # the length of the k-mer
+epochs = 9 # number of epochs to train the model
 
 ############ Get data set ############
 ''' Get train, validation, test set and label from given data 
@@ -53,26 +52,22 @@ print("****** FEATURES CREATED ******\n")
 
 ############ Training ############
 ''' Train the model using logistic regression '''
-# from models import logistic_regression_model
+from models import logistic_regression_model
+from models import SVM
+from kernels import linear_kernel, rbf_kernel, polynomial_kernel
 
 print("****** TRAINING ******")
-# train_set, validation_set, test_set = create_k_mer_features(train_set, \
-#                         validation_set, test_set, k)
+# model = logistic_regression_model(epochs)
+model = SVM(rbf_kernel, 0.1)
+model.train(train_set, validation_set, label, plots=True)
+model.save()
 print("****** TRAINING ******\n")
 
+############ Predict on test set and save result ############
+''' Predict on test set and save result for kaggle submission '''
+from save_submission import save_submission
 
-
-
-
-
-
-#TO UNCOMMENT
-# sys.stdout = out_console
-#TO UNCOMMENT
-# sys.stdout = out_console; print("****** LOADING DATA ******")
-# print("****** DATA LOADED ******\n"); sys.stdout = sys.__stdout__
-#TO UNCOMMENT
-# sys.stdout = sys.__stdout__
-#TO UNCOMMENT
-f.write(out_console.getvalue())
-f.close()
+print("****** PREDICT ON TEST SET AND SAVE RESULT ******")
+test_predictions = model.predict(np.array(test_set))
+save_submission(test_predictions, "GONZALEZ_LAURENDEAU_kaggle_submission")
+print("****** PREDICT ON TEST SET AND SAVE RESULT ******\n")

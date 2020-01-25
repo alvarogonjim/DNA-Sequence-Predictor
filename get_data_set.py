@@ -13,13 +13,6 @@ import os # for the path
 import glob # for finding files
 import pandas as pd # for construct the data
 
-# TO DELETE
-pd.set_option('display.max_rows', None)
-pd.set_option('display.max_columns', None)
-pd.set_option('display.width', None)
-pd.set_option('display.max_colwidth', -1)
-# TO DELETE
-
 def read_data(name, title=""):
     """
     Read the csv files in the format given on kaggle
@@ -31,7 +24,7 @@ def read_data(name, title=""):
     for i in files:
         data = pd.concat([data, pd.read_csv(i,index_col=0)])
     print("Load " + str(data.shape[0]) + " " + title + ".")
-    return data
+    return data #.iloc[:50,:]
 
 
 def split_train_valid(data,valid,shuffle=True):
@@ -48,12 +41,11 @@ def split_train_valid(data,valid,shuffle=True):
         if shuffle:
             print(" after shuffling.")
             validation_set = data.sample(frac=valid/100) #, random_state=seed)
-            train_set = data.drop(validation_set.index)
         else:
             print(".")
             l = data.shape[0]
             validation_set = data.iloc[int(l-valid*l/100):,:]
-            train_set = data.drop(validation_set.index)
+        train_set = data.drop(validation_set.index)
         print("Final train set: " + str(train_set.shape[0]))
         print("Final validation set: " + str(validation_set.shape[0]))
     # Do not split
