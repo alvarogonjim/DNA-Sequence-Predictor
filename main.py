@@ -58,9 +58,9 @@ from models import gaussian_process_clissifier
 from kernels import linear_kernel, rbf_kernel, polynomial_kernel
 
 print("****** TRAINING ******")
-# model = logistic_regression_model(epochs)
+model = logistic_regression_model(epochs)
 # model = SVM(rbf_kernel, 0.1)
-model = gaussian_process_clissifier()
+# model = gaussian_process_clissifier()
 model.train(train_set, validation_set, label, plots=True)
 model.save()
 print("****** TRAINING ******\n")
