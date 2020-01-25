@@ -37,10 +37,11 @@ def read_data(name, title=""):
 def split_train_valid(data,valid,shuffle=True):
     """
     Split the data in training and validation set
-    @param: data: panda dataframe - data to split
+    @param: data: pandas dataframe - data to split
             valid: int - split the data according this percent
             shuffle: bool - whether or not to shuffle the data. Default = True
     """
+    # Split
     if ((valid > 0) and (valid<100)):
         print("Split data in training set (" + str(100-valid) + "%)" \
                + " and validation set (" + str(valid) + "%)", end="")
@@ -55,6 +56,10 @@ def split_train_valid(data,valid,shuffle=True):
             train_set = data.drop(validation_set.index)
         print("Final train set: " + str(train_set.shape[0]))
         print("Final validation set: " + str(validation_set.shape[0]))
+    # Do not split
+    elif valid == 0:
+        validation_set = pd.DataFrame()
+    # Error on valid number
     else:
         print("Error: split percents number is not valid. It should an integer" \
                 + " between >0 and <100. Given: " + valid)
@@ -81,7 +86,7 @@ def get_data_set(folder="data/",shuffle=True,valid=33):
     train_set = read_data(dir_path+"/"+folder+"Xtr", "training data")
 
     # Split training data set and validation data set
-    train_set, validation_set = split_train_valid(train_set,valid,False)
+    train_set, validation_set = split_train_valid(train_set,valid,shuffle)
 
     # Get test data set
     test_set = read_data(dir_path+"/"+folder+"Xte", "test data")
