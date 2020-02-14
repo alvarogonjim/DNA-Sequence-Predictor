@@ -13,7 +13,7 @@ import pandas as pd
 from tqdm import tqdm
 
 
-from dataHandler import DataHandler
+from DataPipeline import DataPipeline
 from largeMargin import LargeMargin
 from kernel import Kernel
 from utils import kernel_train, kernel_predict, write_predictions
@@ -28,26 +28,26 @@ print(
 )
 
 fname = "0"
-dataset = DataHandler("data/Xtr" + fname + ".csv")
+dataset = DataPipeline("data/Xtr" + fname + ".csv")
 
 labels = pd.read_csv("data/Ytr" + fname + ".csv")
 y = 2.0 * np.array(labels["Bound"]) - 1
 
-test = DataHandler("data/Xte" + fname + ".csv")
+test = DataPipeline("data/Xte" + fname + ".csv")
 
 dataset.X = pd.concat([dataset.X, test.X], axis=0, ignore_index=True)
 
 
-dataset.populate_kmer_set(k=9)
-dataset.mismatch_preprocess(k=9, m=1)
+dataset.compute_k_mers(k=9)
+dataset.mismatch(k=9, m=1)
 K9 = Kernel(Kernel.mismatch()).gram(dataset.data)
 
-dataset.populate_kmer_set(k=10)
-dataset.mismatch_preprocess(k=10, m=1)
+dataset.compute_k_mers(k=10)
+dataset.mismatch(k=10, m=1)
 K10 = Kernel(Kernel.mismatch()).gram(dataset.data)
 
-dataset.populate_kmer_set(k=11)
-dataset.mismatch_preprocess(k=11, m=1)
+dataset.compute_k_mers(k=11)
+dataset.mismatch(k=11, m=1)
 K11 = Kernel(Kernel.mismatch()).gram(dataset.data)
 
 
@@ -57,7 +57,7 @@ training = [i for i in range(2000)]
 testing = [i for i in range(2000, 3000)]
 
 # Careful change the lmda
-lmda = 0.0001
+lmda = 0.00000001
 
 alpha = LargeMargin.SVM(K[training][:, training], y, lmda)
 
@@ -78,27 +78,27 @@ print(
 )
 
 fname = "1"
-dataset = DataHandler("data/Xtr" + fname + ".csv")
+dataset = DataPipeline("data/Xtr" + fname + ".csv")
 
 labels = pd.read_csv("data/Ytr" + fname + ".csv")
 y = 2.0 * np.array(labels["Bound"]) - 1
 
-test = DataHandler("data/Xte" + fname + ".csv")
+test = DataPipeline("data/Xte" + fname + ".csv")
 
 
 dataset.X = pd.concat([dataset.X, test.X], axis=0, ignore_index=True)
 
 
-dataset.populate_kmer_set(k=9)
-dataset.mismatch_preprocess(k=9, m=1)
+dataset.compute_k_mers(k=9)
+dataset.mismatch(k=9, m=1)
 K9 = Kernel(Kernel.mismatch()).gram(dataset.data)
 
-dataset.populate_kmer_set(k=10)
-dataset.mismatch_preprocess(k=10, m=1)
+dataset.compute_k_mers(k=10)
+dataset.mismatch(k=10, m=1)
 K10 = Kernel(Kernel.mismatch()).gram(dataset.data)
 
-dataset.populate_kmer_set(k=11)
-dataset.mismatch_preprocess(k=12, m=1)
+dataset.compute_k_mers(k=11)
+dataset.mismatch(k=12, m=1)
 K11 = Kernel(Kernel.mismatch()).gram(dataset.data)
 
 
@@ -108,7 +108,7 @@ training = [i for i in range(2000)]
 testing = [i for i in range(2000, 3000)]
 
 # Careful change the lmda
-lmda = 0.0001
+lmda = 0.00000001
 
 
 alpha = LargeMargin.SVM(K[training][:, training], y, lmda)
@@ -130,19 +130,19 @@ print(
 )
 
 fname = "2"
-dataset = DataHandler("data/Xtr" + fname + ".csv")
+dataset = DataPipeline("data/Xtr" + fname + ".csv")
 
 labels = pd.read_csv("data/Ytr" + fname + ".csv")
 y = 2.0 * np.array(labels["Bound"]) - 1
 
-test = DataHandler("data/Xte" + fname + ".csv")
+test = DataPipeline("data/Xte" + fname + ".csv")
 
 
-dataset.populate_kmer_set(6)
-test.kmer_set = dataset.kmer_set
+dataset.compute_k_mers(6)
+test.kmers = dataset.kmers
 
-dataset.mismatch_preprocess(6, 0)
-test.mismatch_preprocess(6, 0)
+dataset.mismatch(6, 0)
+test.mismatch(6, 0)
 
 kernel = Kernel(Kernel.sparse_gaussian(7.8))
 
