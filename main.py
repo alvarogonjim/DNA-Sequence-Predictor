@@ -156,7 +156,7 @@ pred2 = kernel_predict(kernel, alpha, dataset.data, test.data)
 print(
     """
 ------------------------------------------------------------
-        KAGGLEIZER
+        RESULTS
 ------------------------------------------------------------
 """
 )
