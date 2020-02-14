@@ -1,4 +1,15 @@
-# code modified from helq's code on github
+#!/usr/bin/env python
+
+# code modified from help's code on github
+
+__author__ = "Gonzalez Jimenez Alvaro, Laurendeau Matthieu"
+__copyright__ = "Copyright 2020, Advanced Learning Models"
+__license__ = "GPL"
+__version__ = "1.0.1"
+__maintainer__ = "Gonzalez Jimenez Alvaro, Laurendeau Matthieu"
+__email__ = "alvaro.gonzalez-jimenez@grenoble-inp.org"
+__status__ = "Develop"
+
 
 import numpy as np
 cimport numpy as np
