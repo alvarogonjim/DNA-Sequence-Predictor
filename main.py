@@ -56,8 +56,8 @@ K = K9 + K10 + K11
 training = [i for i in range(2000)]
 testing = [i for i in range(2000, 3000)]
 
-lmda = 0.80
-
+# Careful change the lmda
+lmda = 0.76
 
 alpha = LargeMargin.SVM(K[training][:, training], y, lmda)
 
@@ -107,7 +107,8 @@ K = K9 + K10 + K11
 training = [i for i in range(2000)]
 testing = [i for i in range(2000, 3000)]
 
-lmda = 0.999
+# Careful change the lmda
+lmda = 0.833
 
 
 alpha = LargeMargin.SVM(K[training][:, training], y, lmda)
@@ -145,8 +146,8 @@ test.mismatch_preprocess(6, 0)
 
 kernel = Kernel(Kernel.sparse_gaussian(7.8))
 
-
-lmda = 0.01
+# Careful change the lmda
+lmda = 0.00000001
 
 alpha = kernel_train(kernel, dataset.data, y, lmda)
 pred2 = kernel_predict(kernel, alpha, dataset.data, test.data)
