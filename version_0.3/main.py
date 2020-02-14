@@ -1,60 +1,34 @@
+#!/usr/bin/env python
+
 __author__ = "Gonzalez Jimenez Alvaro, Laurendeau Matthieu"
-__date__ = "2020 January"
 __copyright__ = "Copyright 2020, Advanced Learning Models"
 __license__ = "GPL"
-__version__ = "0.3"
+__version__ = "1.0.1"
 __maintainer__ = "Gonzalez Jimenez Alvaro, Laurendeau Matthieu"
-__email__ = "alvaro.gonzalez-jimenez@grenoble-inp.org, laurendeau.matthieu@gmail.com"
-__status__ = "Submitted"
-__brief_main__ = "Kaggle data challenge for the course 'Advanced Learning Models' \
-        for the master programs MSIAM and MoSIG. Main file which allows to read \
-        the data, create the features, "
+__email__ = "alvaro.gonzalez-jimenez@grenoble-inp.org"
+__status__ = "Develop"
 
-############ Imports ############
-"""
-In the context of the project, the goal is to gain practical experience 
-with machine learning and learn how to implement for solve simple problems.
-Thus, the rules say that external machine learning libraries are forbidden, and 
-so we limit ourself to use only common libraries in python as following.
-We have the right to work with some linear algebra and optimization libraries.
-"""
+import numpy as np
+import pandas as pd
+from tqdm import tqdm
 
-# Pre-installed library: (python3 -m pip install ...)
-import numpy as np # for arrays tricks
-import pandas as pd # for read the data
-import matplotlib.pyplot as plt # for plots
-
-# Handmade:
-''' Get train, validation, test set and label from the given data 
-under panda dataframe '''
-from get_dataset import get_dataset
 
 from dataHandler import DataHandler
 from largeMargin import LargeMargin
 from kernel import Kernel
 from utils import kernel_train, kernel_predict, write_predictions
 
-# Fancy print in the console
-class style:
-    red = '\033[91m'
-    blue = '\033[94m'
-    green = '\033[92m'
-    yellow = '\033[93m'
-    bold = '\033[1m'
-    italic = '\033[3m'
-    mono = '\033[2m'
-    underline = '\033[4m'
-    normal = '\033[0m'
 
-############ Dataset 0 ############
-print(style.bold + style.red + "Dataset 0" + style.normal)
+print(
+    """
+------------------------------------------------------------
+        DATASET 0
+------------------------------------------------------------
+"""
+)
 
 fname = "0"
 dataset = DataHandler("data/Xtr" + fname + ".csv")
-print(dataset)
-train_set, validation_set, test_set, label = get_dataset("0",folder="data/",trunc=-1,shuffle=False,valid=0)
-print(train_set)
-assert False
 
 labels = pd.read_csv("data/Ytr" + fname + ".csv")
 y = 2.0 * np.array(labels["Bound"]) - 1
@@ -95,7 +69,6 @@ for i in tqdm(testing):
     pred0.append(np.sign(val))
 
 
-############ Dataset 1 ############
 print(
     """
 ------------------------------------------------------------
@@ -148,7 +121,6 @@ for i in tqdm(testing):
     pred1.append(np.sign(val))
 
 
-############ Dataset 2 ############
 print(
     """
 ------------------------------------------------------------
@@ -180,7 +152,7 @@ lmda = 0.00000001
 alpha = kernel_train(kernel, dataset.data, y, lmda)
 pred2 = kernel_predict(kernel, alpha, dataset.data, test.data)
 
-############ Submission ############
+
 print(
     """
 ------------------------------------------------------------
