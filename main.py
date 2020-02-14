@@ -57,7 +57,7 @@ training = [i for i in range(2000)]
 testing = [i for i in range(2000, 3000)]
 
 # Careful change the lmda
-lmda = 0.76
+lmda = 0.0001
 
 alpha = LargeMargin.SVM(K[training][:, training], y, lmda)
 
@@ -108,7 +108,7 @@ training = [i for i in range(2000)]
 testing = [i for i in range(2000, 3000)]
 
 # Careful change the lmda
-lmda = 0.833
+lmda = 0.0001
 
 
 alpha = LargeMargin.SVM(K[training][:, training], y, lmda)

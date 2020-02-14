@@ -13,20 +13,20 @@ from tqdm import tqdm
 
 
 class Kernel:
-    def gaussian(self, sigma):
+    def gaussian(sigma):
         return (
             lambda x, y: 1
             / (np.sqrt(2 * np.pi) * sigma)
             * np.exp(-np.linalg.norm(x - y) ** 2 / (2 * sigma ** 2))
         )
 
-    def linear(self):
+    def linear():
         return lambda x, y: np.dot(x, y)
 
-    def polynomial(self, c, n):
+    def polynomial(c, n):
         return lambda x, y: (np.dot(x, y) + c) ** n
 
-    def spectrum(self):
+    def spectrum():
         def f(x, y):
             prod_scal = 0
             for kmer in x:
@@ -36,7 +36,7 @@ class Kernel:
 
         return f
 
-    def mismatch(self):
+    def mismatch():
         def f(x, y):
             prod_scal = 0
             for idx in x:
@@ -46,7 +46,7 @@ class Kernel:
 
         return f
 
-    def sparse_gaussian(self, sigma):
+    def sparse_gaussian(sigma):
         def f(x, y):
             ps = Kernel.mismatch()
             norm = ps(x, x) - 2 * ps(x, y) + ps(y, y)
@@ -54,7 +54,7 @@ class Kernel:
 
         return f
 
-    def sparse_poly(self, c, n):
+    def sparse_poly(c, n):
         def f(x, y):
             ps = Kernel.mismatch()
             return (ps(x, y) + c) ** n
