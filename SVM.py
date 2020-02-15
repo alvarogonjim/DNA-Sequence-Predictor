@@ -12,8 +12,8 @@ from cvxopt import solvers, matrix, spmatrix, sparse
 import numpy as np
 
 
-class LargeMargin:
-    def SVM(gram_matrix, labels, lmda):
+class SVM:
+    def fit(gram_matrix, labels, lmda):
         '''
         @param gram_matrix: Gran Matrix
         @param labels: Contains all the labels (-1, 1) to fit the SVM

@@ -38,8 +38,8 @@ from compute_kmer_feature import compute_kmer_feature
 from kernels import *
 
 ''' TO MODIFY '''
-from largeMargin import LargeMargin
-from utils import kernel_train, kernel_predict, write_predictions, score
+from SVM import SVM
+from utils import write_predictions, score
 
 # Fancy print in the console
 class style:
@@ -89,7 +89,7 @@ for step in range(N):
 # Reshape data
 label_training = np.squeeze(label_training)
 label_validation = np.squeeze(label_validation)
-alpha = LargeMargin.SVM(train_set_gm, label_training, lmda)
+alpha = SVM.fit(train_set_gm, label_training, lmda)
 print(alpha)
 
 pred0 = []
