@@ -1,9 +1,12 @@
-"""
-@authors: GONZALEZ Alvaro: alvarogonjim95@gmail.com
-        & LAURENDEAU Matthieu: laurendeau.matthieu@gmail.com
-@date: 2020 January
-@brief: Read the data given for the kaggle project.
-"""
+__author__ = "Gonzalez Jimenez Alvaro, Laurendeau Matthieu"
+__date__ = "2020 January"
+__copyright__ = "Copyright 2020, Advanced Learning Models"
+__license__ = "GPL"
+__version__ = "0.3"
+__maintainer__ = "Gonzalez Jimenez Alvaro, Laurendeau Matthieu"
+__email__ = "alvaro.gonzalez-jimenez@grenoble-inp.org, laurendeau.matthieu@gmail.com"
+__status__ = "Submitted"
+__brief_compute_kmer_feature__ = "Read the data given for the kaggle project."
 
 ############ Imports ############
 """
@@ -34,6 +37,7 @@ def split_train_valid(data,valid,shuffle=True):
         print("Final validation set: " + str(validation_set.shape[0]))
     # Do not split
     elif valid == 0:
+        train_set = data
         validation_set = pd.DataFrame()
     # Error on valid number
     else:
@@ -59,24 +63,24 @@ def get_dataset(number,folder="data/",trunc=-1,shuffle=True,valid=33):
     """
 
     # Get training data set
-    train_set = pd.read_csv(folder+"Xtr"+number,index_col=0)
+    train_set = pd.read_csv(folder+"Xtr"+number+".csv",index_col=0)
     if (trunc != -1):
         train_set = train_set.iloc[:trunc,:]
-    print("Load " + str(train_set.shape[0]) + " training data" + ".")
+    print("\t\tLoad " + str(train_set.shape[0]) + " training data" + ".")
 
     # Split training data set and validation data set
     train_set, validation_set = split_train_valid(train_set,valid,shuffle)
 
     # Get test data set
-    test_set = pd.read_csv(folder+"Xte"+number,index_col=0)
+    test_set = pd.read_csv(folder+"Xte"+number+".csv",index_col=0)
     if (trunc != -1):
         test_set = test_set.iloc[:trunc,:]
-    print("Load " + str(test_set.shape[0]) + " test data" + ".")
+    print("\t\tLoad " + str(test_set.shape[0]) + " test data" + ".")
 
-    # Get label
-    label = pd.read_csv(folder+"Ytr"+number,index_col=0)
+    # Get label and rane it between -1 and 1
+    label = pd.read_csv(folder+"Ytr"+number+".csv",index_col=0)*2 -1
     if (trunc != -1):
         label = label.iloc[:trunc,:]
-    print("Load " + str(label.shape[0]) + " label" + ".")
+    print("\t\tLoad " + str(label.shape[0]) + " label" + ".")
 
     return train_set, validation_set, test_set, label

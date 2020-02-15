@@ -46,8 +46,8 @@ def score(predict, yreal):
 
 def split_data(dataset, y, k, m):
 
-    dataset.populate_kmer_set(k)
-    dataset.mismatch_preprocess(k, m)
+    dataset.compute_k_mers(k)
+    dataset.mismatch(k, m)
     idx = range(len(dataset.data))
     pairs = []
     data_tranches = [idx[500 * i : 500 * i + 500] for i in range(4)]

@@ -21,17 +21,25 @@ We have the right to work with some linear algebra and optimization libraries.
 
 # Pre-installed library: (python3 -m pip install ...)
 import numpy as np # for arrays tricks
+from itertools import combinations, product # for list operations
 import pandas as pd # for read the data
 import matplotlib.pyplot as plt # for plots
+from multiprocessing import Pool # for multiprocess our code
+from functools import partial # for create partial object
+import tqdm as pb # for progress bar
+
 
 # Handmade:
 ''' Get train, validation, test set and label from the given data 
 under panda dataframe '''
 from get_dataset import get_dataset
+''' Create features in train, validation and test set '''
+from compute_kmer_feature import compute_kmer_feature
+''' Define kernel methods '''
+from kernels import *
 
-from DataPipeline import DataPipeline
 from largeMargin import LargeMargin
-from kernel import Kernel
+# from kernels import Kernel
 from utils import kernel_train, kernel_predict, write_predictions
 
 # Fancy print in the console
@@ -49,28 +57,29 @@ class style:
 ############ Dataset 0 ############
 print(style.bold + style.red + "Dataset 0" + style.normal)
 
-fname = "0"
-<<<<<<< HEAD
-dataset = DataHandler("data/Xtr" + fname + ".csv")
-print(dataset)
-train_set, validation_set, test_set, label = get_dataset("0",folder="data/",trunc=-1,shuffle=False,valid=0)
-print(train_set)
-assert False
-=======
-dataset = DataPipeline("data/Xtr" + fname + ".csv")
->>>>>>> multikernels
+# Parameters
+file_number = "0" # for the name of the files to read this dataset
+truncation = 10 # number of data to read. -1 --> get all data
+s = False # whether shuffle the data
+v = 0 # split data in training and validation set following this percent
+k = 9 # length of the kmer
+m = 1 # number of mismatch allowed
 
-labels = pd.read_csv("data/Ytr" + fname + ".csv")
-y = 2.0 * np.array(labels["Bound"]) - 1
+# Loading data
+print(style.italic + style.blue + "\tBuild datasets" + style.normal)
+train_set, validation_set, test_set, label = get_dataset(file_number, \
+    folder="data/",trunc=truncation, shuffle=s,valid=v)
 
-test = DataPipeline("data/Xte" + fname + ".csv")
+print(style.italic + style.blue + "\tCompute kmers: length=" + str(k) + \
+    ", mismatch=" + str(m) + style.normal)
+train_set, validation_set, test_set = compute_kmer_feature(train_set, \
+                        validation_set, test_set, k, m)
 
-dataset.X = pd.concat([dataset.X, test.X], axis=0, ignore_index=True)
+print("\t\tCompute Gram matrix" + style.normal)
+gram_matrix_0 = gram_matrix(train_set, scalar_product, normalized=False)
 
-
-dataset.compute_k_mers(k=9)
-dataset.mismatch(k=9, m=1)
-K9 = Kernel(Kernel.mismatch()).gram(dataset.data)
+# print(gram_matrix_0)
+assert(False)
 
 dataset.compute_k_mers(k=10)
 dataset.mismatch(k=10, m=1)
