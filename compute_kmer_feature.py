@@ -19,7 +19,6 @@ Libraries necessary to run this file alone.
 """
 from multiprocessing import Pool # for multiprocess the code
 from functools import partial # for create partial object
-import tqdm as pb # for progress bar
 from itertools import combinations, product # for list operations
 
 def count_occurence(s, ss):
@@ -164,8 +163,8 @@ def compute_kmer_feature(train_set, \
 
     # Apply k-mer features to train_set
     train_set_k_mer = []
-    for result in pb.tqdm(pool.imap_unordered(partial(apply_k_mer_features, k, \
-        letters, m, keep_zeros), train_set["seq"]), total=len(train_set["seq"])):
+    for result in pool.imap_unordered(partial(apply_k_mer_features, k, \
+        letters, m, keep_zeros), train_set["seq"]):
         train_set_k_mer += result
     print("\t\tFeature k-mer map applied on training data.")
 
@@ -173,16 +172,16 @@ def compute_kmer_feature(train_set, \
     # Apply k-mer features to validation_set
     validation_set_k_mer = []
     if not validation_set.empty:
-        for result in pb.tqdm(pool.imap_unordered(partial(apply_k_mer_features, k, \
-            letters, m, keep_zeros), validation_set["seq"]), total=len(validation_set["seq"])):
-            train_set_k_mer += result
+        for result in pool.imap_unordered(partial(apply_k_mer_features, k, \
+            letters, m, keep_zeros), validation_set["seq"]):
+            validation_set_k_mer += result
         print("\t\tFeature k-mer map applied on validation data.")
 
     # Apply k-mer features to test_set
     test_set_k_mer = []
-    for result in pb.tqdm(pool.imap_unordered(partial(apply_k_mer_features, k, \
-        letters, m, keep_zeros), test_set["seq"]), total=len(test_set["seq"])):
-        train_set_k_mer += result
+    for result in pool.imap_unordered(partial(apply_k_mer_features, k, \
+        letters, m, keep_zeros), test_set["seq"]):
+        test_set_k_mer += result
     print("\t\tFeature k-mer map applied on test data.")
 
     return train_set_k_mer, validation_set_k_mer, test_set_k_mer

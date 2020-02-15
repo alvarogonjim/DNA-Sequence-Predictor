@@ -68,6 +68,7 @@ class Kernel:
 
     def gram(self, data):
         n = len(data)
+        print(n)
         K = np.zeros((n, n))
         print("Computing Gram Matrix")
         for i in tqdm(range(n)):

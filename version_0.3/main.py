@@ -16,7 +16,7 @@ from tqdm import tqdm
 from DataPipeline import DataPipeline
 from largeMargin import LargeMargin
 from kernel import Kernel
-from utils import kernel_train, kernel_predict, write_predictions
+from utils import kernel_train, kernel_predict, score, split_data
 
 
 print(
@@ -35,16 +35,19 @@ y = 2.0 * np.array(labels["Bound"]) - 1
 
 test = DataPipeline("data/Xte" + fname + ".csv")
 
+
+
 dataset.X = pd.concat([dataset.X, test.X], axis=0, ignore_index=True)
 
 
-dataset.compute_k_mers(k=3)
-# print(dataset.kmers)
-dataset.mismatch(k=3, m=1)
+dataset.compute_k_mers(k=9)
+
+dataset.mismatch(k=9, m=1)
+
+pairs = split_data(dataset, y, k=9, m=1)
 
 K9 = Kernel(Kernel.mismatch()).gram(dataset.data)
-print(K9)
-assert(False)
+
 
 
 dataset.compute_k_mers(k=10)
@@ -57,15 +60,17 @@ K11 = Kernel(Kernel.mismatch()).gram(dataset.data)
 
 
 K = K9 + K10 + K11
-assert False, K
+
 
 training = [i for i in range(2000)]
-testing = [i for i in range(2000, 3000)]
+testing = [i for i in range(1000, 2000)]
 
 # Careful change the lmda
 lmda = 0.00000001
 
+
 alpha = LargeMargin.SVM(K[training][:, training], y, lmda)
+print(alpha)
 
 pred0 = []
 for i in tqdm(testing):
@@ -74,6 +79,7 @@ for i in tqdm(testing):
         val += alpha[k] * K[i, j]
     pred0.append(np.sign(val))
 
+print(score(pred0, y[1000:2000]))
 
 print(
     """

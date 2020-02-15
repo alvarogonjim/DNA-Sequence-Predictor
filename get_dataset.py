@@ -23,7 +23,7 @@ def split_train_valid(data,valid,shuffle=True):
     """
     # Split
     if ((valid > 0) and (valid<100)):
-        print("Split data in training set (" + str(100-valid) + "%)" \
+        print("\t\tSplit data in training set (" + str(100-valid) + "%)" \
                + " and validation set (" + str(valid) + "%)", end="")
         if shuffle:
             print(" after shuffling.")
@@ -33,8 +33,8 @@ def split_train_valid(data,valid,shuffle=True):
             l = data.shape[0]
             validation_set = data.iloc[int(l-valid*l/100):,:]
         train_set = data.drop(validation_set.index)
-        print("Final train set: " + str(train_set.shape[0]))
-        print("Final validation set: " + str(validation_set.shape[0]))
+        print("\t\tFinal train set: " + str(train_set.shape[0]))
+        print("\t\tFinal validation set: " + str(validation_set.shape[0]))
     # Do not split
     elif valid == 0:
         train_set = data

@@ -13,7 +13,6 @@ __brief_compute_kmer_feature__ = "Kernels definition."
 Libraries necessary to run this file alone.
 """
 import numpy as np # for arrays tricks
-import tqdm as pb # for progress bar
 
 def linear_kernel(x, y):
     """
@@ -49,6 +48,7 @@ def scalar_product(x, y):
     for idx in x:
         if idx in y:
             prod_scal += x[idx] * y[idx]
+            # print(x[idx])
     return prod_scal
 
 def sparse_gaussian(x, y, sigma):
@@ -58,7 +58,7 @@ def sparse_gaussian(x, y, sigma):
     norm = scalar_product(x, x) - 2 * scalar_product(x, y) + scalar_product(y, y)
     return 1 / (np.sqrt(2 * np.pi) * sigma) * np.exp(-norm / (2 * sigma ** 2))
 
-def gram_matrix(data, kernel, normalized):
+def gram_matrix(data, kernel, normalized=False):
     """
     Compute Gram matrix
     """

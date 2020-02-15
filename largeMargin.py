@@ -29,7 +29,6 @@ class LargeMargin:
         P = matrix(K)
         Gtop = spmatrix(y, range(n), range(n))
         G = sparse([Gtop, -Gtop])
-
         sol = solvers.qp(P, q, G, h)["x"]
 
         return sol

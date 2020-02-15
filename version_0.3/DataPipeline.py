@@ -15,7 +15,7 @@ from tqdm import tqdm
 class DataPipeline:
     def __init__(self, filename):
         # Read the column of sequences in the given file
-        self.X = pd.read_csv(filename)["seq"][:15]
+        self.X = pd.read_csv(filename)["seq"]
         # Initialize the data with the given sequence
         self.data = self.X
         # Dictionary to store the kmers
