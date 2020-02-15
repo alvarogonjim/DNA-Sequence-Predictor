@@ -12,9 +12,9 @@ __brief_main__ = "Kaggle data challenge for the course 'Advanced Learning Models
 
 ############ Imports ############
 """
-In the context of the project, the goal is to gain practical experience 
+In the context of the project, the goal is to gain practical experience
 with machine learning and learn how to implement for solve simple problems.
-Thus, the rules say that external machine learning libraries are forbidden, and 
+Thus, the rules say that external machine learning libraries are forbidden, and
 so we limit ourself to use only common libraries in python as following.
 We have the right to work with some linear algebra and optimization libraries.
 """
@@ -29,7 +29,7 @@ from functools import partial # for create partial object
 
 
 # Handmade:
-''' Get train, validation, test set and label from the given data 
+''' Get train, validation, test set and label from the given data
 under panda dataframe '''
 from get_dataset import get_dataset
 ''' Create features in train, validation and test set '''
@@ -61,12 +61,12 @@ file_number = "0" # for the name of the files to read this dataset
 truncation = -1 # number of data to read. -1 --> get all data
 s = False # whether shuffle the data
 v = 33 # split data in training and validation set following this percent
-k = 3 # length of the kmer start
+k = 9 # length of the kmer start
 m = 1 # number of mismatch allowed
-N = 9 # number of gram matrix to compute
+N = 3 # number of gram matrix to compute
 # Initialization of the gram matrix
 train_set_gm = 0; validation_set_gm = 0; test_set_gm = 0
-lmda = 0.00000001 # regularization parameter
+lmda = 0.0001 # regularization parameter
 
 # Loading data
 print(style.italic + style.blue + "\tBuild datasets" + style.normal)

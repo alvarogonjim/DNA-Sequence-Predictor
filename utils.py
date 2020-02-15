@@ -1,21 +1,22 @@
-#!/usr/bin/env python
-
 __author__ = "Gonzalez Jimenez Alvaro, Laurendeau Matthieu"
+__date__ = "2020 January"
 __copyright__ = "Copyright 2020, Advanced Learning Models"
 __license__ = "GPL"
-__version__ = "1.0.1"
+__version__ = "0.3"
 __maintainer__ = "Gonzalez Jimenez Alvaro, Laurendeau Matthieu"
-__email__ = "alvaro.gonzalez-jimenez@grenoble-inp.org"
-__status__ = "Develop"
+__email__ = "alvaro.gonzalez-jimenez@grenoble-inp.org, laurendeau.matthieu@gmail.com"
+__status__ = "Submitted"
+__brief_utils__ = "This file contains some util methods that we used during the execution' \
+        like write the predictions in a CSV or get the score of the model during the training"
 
 import numpy as np
 import pandas as pd
-from largeMargin import LargeMargin
-from tqdm import tqdm
 
-
-def write_predictions(predictions, out_fname):
-
+def write_predictions(predictions, out_fname='Yte.csv'):
+    '''
+    @param predictions: Numpy array which contains all the results that our model has predicted.
+    @param out_fname: Name of the file to store the results by default is Yte.csv
+    '''
     data = [[int(np.abs((pred + 1) // 2))] for i, pred in enumerate(predictions)]
     data = np.concatenate([[["Bound"]], data])
 
@@ -23,39 +24,9 @@ def write_predictions(predictions, out_fname):
     data_frame.index.name = "Id"
     data_frame.to_csv(out_fname)
 
-
-def kernel_train(kernel, training_data, ytrain, lmda):
-
-    K = kernel.gram(training_data)
-    alpha = LargeMargin.SVM(K, ytrain, lmda)
-    return alpha
-
-
-def kernel_predict(kernel, alpha, training, test):
-
-    predict = []
-    for x in tqdm(test):
-        predict.append(np.sign(kernel.eval_f(x, alpha, training)))
-    return predict
-
-
 def score(predict, yreal):
-
+    '''
+    @param predict; Numpy array with all the results that our model has predicted.
+    @param yreal: Numpy array with the real labels of the sequences.
+    '''
     return sum([int(predict[i] == yreal[i]) for i in range(len(yreal))]) / len(yreal)
-
-
-def split_data(dataset, y, k, m):
-
-    dataset.compute_k_mers(k)
-    dataset.mismatch(k, m)
-    idx = range(len(dataset.data))
-    pairs = []
-    data_tranches = [idx[500 * i : 500 * i + 500] for i in range(4)]
-    label_tranches = [y[500 * i : 500 * i + 500] for i in range(4)]
-    for i in range(4):
-        test, ytest = data_tranches[i], label_tranches[i]
-        train = np.concatenate([data_tranches[j] for j in range(4) if j != i])
-        ytrain = np.concatenate([label_tranches[j] for j in range(4) if j != i])
-
-        pairs.append((train, ytrain, test, ytest))
-    return pairs
