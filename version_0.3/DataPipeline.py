@@ -15,7 +15,7 @@ from tqdm import tqdm
 class DataPipeline:
     def __init__(self, filename):
         # Read the column of sequences in the given file
-        self.X = pd.read_csv(filename)["seq"]
+        self.X = pd.read_csv(filename)["seq"][:24]
         # Initialize the data with the given sequence
         self.data = self.X
         # Dictionary to store the kmers
@@ -61,28 +61,36 @@ class DataPipeline:
                 kmer = x[j : j + k]
                 if kmer not in self.precomputed:
                     neighborhood = self.neighborhood(kmer, m)
-                    # print(neighborhood)
+                    # print(self.kmers, len(self.kmers))
+                    # assert(False)
+                    # print(kmer)
+                    # print(neighborhood, len(neighborhood))
                     # assert(False)
                     self.precomputed[kmer] = [
                         self.kmers[neighbor]
                         for neighbor in neighborhood
                         if neighbor in self.kmers
                     ]
-                # assert False, self.precomputed
+                    # print(self.precomputed[kmer],len(self.precomputed[kmer]))
+                    # assert (False)
+
 
                 for index in self.precomputed[kmer]:
                     if index in set_kmers[i]:
                         set_kmers[i][index] += 1
                     else:
                         set_kmers[i][index] = 1
+                    # print(set_kmers[i][index], len(set_kmers[i]))
+                    # assert(i<3)
         # print(len(set_kmers))
         # print(neighborhood)
         # print(kmer,index)
         # assert False
             # print(set_kmers[i])
             # print(len(set_kmers[i]))
-            # assert(False)
+            # assert(i <3)
         # assert(False)
+        # assert False, len(set_kmers[3])
         self.data = set_kmers
 
     def neighborhood(self, kmer, m):

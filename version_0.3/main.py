@@ -64,8 +64,8 @@ K11 = Kernel(Kernel.mismatch()).gram(dataset.data)
 
 K = K9 + K10 + K11
 
-# print(K)
-# assert(False)
+print(K9)
+assert(False)
 
 training = [i for i in range(2000)]
 testing = [i for i in range(1000, 2000)]

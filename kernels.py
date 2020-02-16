@@ -41,20 +41,6 @@ def gaussian(x, y, sigma):
     return (1 / (np.sqrt(2 * np.pi) * sigma) \
     * np.exp(-np.linalg.norm(x - y) ** 2 / (2 * sigma ** 2)))
 
-
-def scalar_product_hpc(x, y):
-    """
-    Scalar product for multiprocessing
-    """
-    print(y)
-    assert(False)
-    x = d[0]
-    y = d[1]
-    if x[0] == y[0]:
-        res = x[1] * y[1]
-
-
-
 def scalar_product(x, y):
     """
     Scalar product
@@ -65,61 +51,17 @@ def scalar_product(x, y):
             res += x[idx] * y[idx]
     return res
 
-def sparse_gaussian(x, y, sigma):
-    """
-    Sparse gaussian
-    """
-    norm = scalar_product(x, x) - 2 * scalar_product(x, y) + scalar_product(y, y)
-    return 1 / (np.sqrt(2 * np.pi) * sigma) * np.exp(-norm / (2 * sigma ** 2))
-
 def gram_matrix(train_set_kmer, validation_set_kmer, test_set_kmer, kernel):
     """
     Compute Gram matrix on all the datasets
     """
     data = train_set_kmer + validation_set_kmer + test_set_kmer
-    # print(data[-3:])
     n = len(data)
     G = np.zeros((n, n))
     for i in range(n):
         for j in range(i + 1):
+            print(str(round((i*n+j)/(n*n)*100)).zfill(3) + "%", end="\b\b\b\b")
             K = kernel(data[i], data[j])
             G[i, j] = K
             G[j, i] = K
     return G
-
-# def gram_matrix(train_set_kmer, validation_set_kmer, test_set_kmer, kernel):
-#     """
-#     Compute Gram matrix on all the datasets
-#     """
-#     data = train_set_kmer + validation_set_kmer + test_set_kmer
-#     n = len(data)
-#     G = np.zeros((n, n))
-#     for i in range(n):
-#         d = Manager().dict()
-#         d = data[i+1]
-#         # print(d)
-#         # assert(False)
-#         K = 0
-#         pool = Pool(processes=8)
-#         for result in pool.imap_unordered(partial(scalar_product_hpc, \
-#             data[i]), d):
-#             K += result
-#         # K = kernel(data[i], data[j])
-#         G[i, j] = K
-#         G[j, i] = K
-#     return G
-
-def eval_f(self, x, alpha, data):
-    if self.normalized:
-        square_norm_x = np.sqrt(self.kernel(x, x))
-        result = np.sum(
-            [
-                (alpha[i] * self.kernel(x, xi)) / (square_norm_x * self.diag[i])
-                for i, xi in enumerate(data)
-            ]
-        )
-    else:
-        result = np.sum(
-            [alpha[i] * self.kernel(x, xi) for i, xi in enumerate(data)]
-        )
-    return result
