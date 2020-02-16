@@ -38,17 +38,20 @@ test = DataPipeline("data/Xte" + fname + ".csv")
 
 
 dataset.X = pd.concat([dataset.X, test.X], axis=0, ignore_index=True)
+# dataset.X = pd.concat([dataset.X], axis=0, ignore_index=True)
 
 
 dataset.compute_k_mers(k=9)
 
 dataset.mismatch(k=9, m=1)
 
-pairs = split_data(dataset, y, k=9, m=1)
+# print(dataset.data)
+# assert(False)
 
 K9 = Kernel(Kernel.mismatch()).gram(dataset.data)
 
-
+# print(K9)
+# assert(False)
 
 dataset.compute_k_mers(k=10)
 dataset.mismatch(k=10, m=1)
@@ -61,6 +64,8 @@ K11 = Kernel(Kernel.mismatch()).gram(dataset.data)
 
 K = K9 + K10 + K11
 
+# print(K)
+# assert(False)
 
 training = [i for i in range(2000)]
 testing = [i for i in range(1000, 2000)]

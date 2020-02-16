@@ -13,6 +13,8 @@ __brief_compute_kmer_feature__ = "Kernels definition."
 Libraries necessary to run this file alone.
 """
 import numpy as np # for arrays tricks
+from multiprocessing import Pool, Manager # for multiprocess the code
+from functools import partial # for create partial objec
 
 def linear_kernel(x, y):
     """
@@ -40,16 +42,28 @@ def gaussian(x, y, sigma):
     * np.exp(-np.linalg.norm(x - y) ** 2 / (2 * sigma ** 2)))
 
 
+def scalar_product_hpc(x, y):
+    """
+    Scalar product for multiprocessing
+    """
+    print(y)
+    assert(False)
+    x = d[0]
+    y = d[1]
+    if x[0] == y[0]:
+        res = x[1] * y[1]
+
+
+
 def scalar_product(x, y):
     """
     Scalar product
     """
-    prod_scal = 0
+    res = 0
     for idx in x:
         if idx in y:
-            prod_scal += x[idx] * y[idx]
-            # print(x[idx])
-    return prod_scal
+            res += x[idx] * y[idx]
+    return res
 
 def sparse_gaussian(x, y, sigma):
     """
@@ -58,25 +72,42 @@ def sparse_gaussian(x, y, sigma):
     norm = scalar_product(x, x) - 2 * scalar_product(x, y) + scalar_product(y, y)
     return 1 / (np.sqrt(2 * np.pi) * sigma) * np.exp(-norm / (2 * sigma ** 2))
 
-def gram_matrix(data, kernel, normalized=False):
+def gram_matrix(train_set_kmer, validation_set_kmer, test_set_kmer, kernel):
     """
-    Compute Gram matrix
+    Compute Gram matrix on all the datasets
     """
+    data = train_set_kmer + validation_set_kmer + test_set_kmer
+    # print(data[-3:])
     n = len(data)
-    K = np.zeros((n, n))
+    G = np.zeros((n, n))
     for i in range(n):
         for j in range(i + 1):
-            prod_scal = kernel(data[i], data[j])
-            K[i, j] = prod_scal
-            K[j, i] = prod_scal
+            K = kernel(data[i], data[j])
+            G[i, j] = K
+            G[j, i] = K
+    return G
 
-    if normalized:
-        diag = np.sqrt(np.diag(K))
-        for i in range(n):
-            K[i, :] = K[i, :] / diag[i]
-            K[:, i] = K[:, i] / diag[i]
-
-    return K
+# def gram_matrix(train_set_kmer, validation_set_kmer, test_set_kmer, kernel):
+#     """
+#     Compute Gram matrix on all the datasets
+#     """
+#     data = train_set_kmer + validation_set_kmer + test_set_kmer
+#     n = len(data)
+#     G = np.zeros((n, n))
+#     for i in range(n):
+#         d = Manager().dict()
+#         d = data[i+1]
+#         # print(d)
+#         # assert(False)
+#         K = 0
+#         pool = Pool(processes=8)
+#         for result in pool.imap_unordered(partial(scalar_product_hpc, \
+#             data[i]), d):
+#             K += result
+#         # K = kernel(data[i], data[j])
+#         G[i, j] = K
+#         G[j, i] = K
+#     return G
 
 def eval_f(self, x, alpha, data):
     if self.normalized:

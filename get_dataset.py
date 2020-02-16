@@ -6,7 +6,7 @@ __version__ = "0.3"
 __maintainer__ = "Gonzalez Jimenez Alvaro, Laurendeau Matthieu"
 __email__ = "alvaro.gonzalez-jimenez@grenoble-inp.org, laurendeau.matthieu@gmail.com"
 __status__ = "Submitted"
-__brief_compute_kmer_feature__ = "Read the data given for the kaggle project."
+__brief_get_dataset__ = "Read the data given for the kaggle project."
 
 ############ Imports ############
 """

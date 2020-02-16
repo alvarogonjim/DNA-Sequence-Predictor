@@ -20,7 +20,7 @@ We have the right to work with some linear algebra and optimization libraries.
 """
 
 # Pre-installed library: (python3 -m pip install ...)
-import numpy as np # for arrays tricks
+import numpy as np # for arrays operations
 from itertools import combinations, product # for list operations
 import pandas as pd # for read the data
 import matplotlib.pyplot as plt # for plots
@@ -35,11 +35,9 @@ from get_dataset import get_dataset
 ''' Create features in train, validation and test set '''
 from compute_kmer_feature import compute_kmer_feature
 ''' Define kernel methods '''
-from kernels import *
-
-''' TO MODIFY '''
-from SVM import SVM
-from utils import write_predictions, score
+from kernels import gram_matrix, scalar_product
+''' Build SVM model '''
+from SVM import SVM, score
 
 # Fancy print in the console
 class style:
@@ -58,7 +56,7 @@ print(style.bold + style.red + "Dataset 0" + style.normal)
 
 # Parameters
 file_number = "0" # for the name of the files to read this dataset
-truncation = -1 # number of data to read. -1 --> get all data
+truncation = 24 # number of data to read. -1 --> get all data
 s = False # whether shuffle the data
 v = 33 # split data in training and validation set following this percent
 k = 9 # length of the kmer start
@@ -66,7 +64,8 @@ m = 1 # number of mismatch allowed
 N = 3 # number of gram matrix to compute
 # Initialization of the gram matrix
 train_set_gm = 0; validation_set_gm = 0; test_set_gm = 0
-lmda = 0.0001 # regularization parameter
+gm = 0
+l = 0.0001 # regularization parameter
 
 # Loading data
 print(style.italic + style.blue + "\tBuild datasets" + style.normal)
@@ -81,25 +80,40 @@ for step in range(N):
     train_set_kmer, validation_set_kmer, test_set_kmer = \
         compute_kmer_feature(train_set, validation_set, test_set, k+step, m)
 
-    print("\t\tCompute Gram matrix" + style.normal)
-    train_set_gm += gram_matrix(train_set_kmer, scalar_product)
-    validation_set_gm += gram_matrix(train_set_kmer, scalar_product)
-    test_set_gm += gram_matrix(train_set_kmer, scalar_product)
+    # assert False, test_set_kmer
 
+    print("\t\tCompute Gram matrix" + style.normal)
+    gm += gram_matrix(train_set_kmer, validation_set_kmer, \
+        test_set_kmer, scalar_product)
+
+    # assert False, gm
+# assert False, gm
 # Reshape data
+train_set_gm = gm[:train_set.shape[0]][:,:train_set.shape[0]]
+validation_set_gm = gm[train_set.shape[0]:train_set.shape[0]+validation_set.shape[0]][:,train_set.shape[0]:train_set.shape[0]+validation_set.shape[0]]
+test_set_gm = gm[train_set.shape[0]+validation_set.shape[0]:train_set.shape[0]+validation_set.shape[0]+test_set.shape[0]][:,train_set.shape[0]+validation_set.shape[0]:train_set.shape[0]+validation_set.shape[0]+test_set.shape[0]]
 label_training = np.squeeze(label_training)
 label_validation = np.squeeze(label_validation)
-alpha = SVM.fit(train_set_gm, label_training, lmda)
-print(alpha)
 
-pred0 = []
-for i in range(np.shape(validation_set)[0]):
-    val = 0
-    for k, j in enumerate(range(np.shape(label_validation)[0])):
-        val += alpha[k] * validation_set_gm[i, j]
-    pred0.append(np.sign(val))
+# Train SVM model
+print(style.italic + style.blue + "\tTrain SVM model" + style.normal)
+model = SVM(l)
+alpha = model.fit(train_set_gm, label_training)
 
-print(score(pred0, label_validation))
+if  not validation_set.empty:
+    # Compute the performances on the validation set
+    print("\t\tCompute the performances on the validation set")
+    predictions_valid = model.predict(gm, np.shape(train_set)[0], \
+        np.shape(validation_set)[0])
+
+    print("\t\tScore: "+ \
+        str(round(score(predictions_valid, label_validation),3)*100) + "%")
+
+# Predict on test set
+print(style.italic + style.blue + "\tPredict on test set" + style.normal)
+predictions_0 = model.predict(gm, np.shape(train_set)[0], \
+    np.shape(test_set)[0])
+
 
 
 

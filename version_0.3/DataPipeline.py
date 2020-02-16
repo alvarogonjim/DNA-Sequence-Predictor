@@ -39,9 +39,9 @@ class DataPipeline:
             for j in range(dimensions - k + 1):
                 kmer = x[j : j + k]
                 if kmer not in self.kmers:
-                    self.kmers[kmer] = index
-                    index += 1
-
+                    self.kmers[kmer] = kmer
+                    # index += 1
+# {'GGG': 34, 'GAG': 21, 'GAA': 10, 'GAC': 21, 'GTG': 23, 'GCG': 28, 'TAG': 15, 'CAG': 21, 'AGG': 22, 'AGA': 8, 'AGT': 11, 'AGC': 25, 'ATG': 16, 'TGG': 25, 'GGA': 27, 'GGT': 25, 'GGC': 29, 'GTC': 17, 'GCC': 30, 'TGC': 21, 'CGC': 21, 'GTT': 9, 'GCA': 20, 'GCT': 19, 'ACT': 15, 'TCT': 12, 'CCT': 20, 'TTG': 17, 'CTG': 19, 'CTA': 15, 'CTT': 15, 'CTC': 17, 'CCG': 25, 'TGA': 15, 'TGT': 13, 'GTA': 8, 'ACC': 14, 'TCC': 17, 'CCC': 27, 'CAC': 17, 'CCA': 16, 'ACA': 17, 'TCA': 11, 'CAA': 15, 'CAT': 12, 'AAA': 5, 'AAC': 9, 'TAC': 10, 'AAT': 4, 'ATT': 2, 'TTC': 8, 'TTT': 4, 'CGT': 7, 'TTA': 1}
     def mismatch(self, k, m):
         '''
          @param kmer: Subsequence to compute the mismatch
@@ -50,19 +50,25 @@ class DataPipeline:
          For each query kmer, compute possible all 2-mismatch kmers into a set.
          Interesect set from 1 with set from 2.
         '''
+        # print(self.kmers, len(self.kmers))
+        # assert(False)
         n = self.X.shape[0]
         dimension = len(self.X[0])
         set_kmers = [{} for x in self.X]
         for i, x in enumerate(tqdm(self.X)):
+            # print(x)
             for j in range(dimension - k + 1):
                 kmer = x[j : j + k]
                 if kmer not in self.precomputed:
                     neighborhood = self.neighborhood(kmer, m)
+                    # print(neighborhood)
+                    # assert(False)
                     self.precomputed[kmer] = [
                         self.kmers[neighbor]
                         for neighbor in neighborhood
                         if neighbor in self.kmers
                     ]
+                # assert False, self.precomputed
 
                 for index in self.precomputed[kmer]:
                     if index in set_kmers[i]:
@@ -73,6 +79,10 @@ class DataPipeline:
         # print(neighborhood)
         # print(kmer,index)
         # assert False
+            # print(set_kmers[i])
+            # print(len(set_kmers[i]))
+            # assert(False)
+        # assert(False)
         self.data = set_kmers
 
     def neighborhood(self, kmer, m):

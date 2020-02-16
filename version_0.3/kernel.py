@@ -41,7 +41,10 @@ class Kernel:
             prod_scal = 0
             for idx in x:
                 if idx in y:
+                    # if idx == "GGG":
+                        # print(x[idx],y[idx])
                     prod_scal += x[idx] * y[idx]
+                    # print(idx, prod_scal)
             return prod_scal
 
         return f
@@ -68,7 +71,9 @@ class Kernel:
 
     def gram(self, data):
         n = len(data)
-        print(n)
+        # print(data[-3:])
+        # print(data)
+        # assert(False)
         K = np.zeros((n, n))
         print("Computing Gram Matrix")
         for i in tqdm(range(n)):

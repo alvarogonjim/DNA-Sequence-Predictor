@@ -6,37 +6,78 @@ __version__ = "0.3"
 __maintainer__ = "Gonzalez Jimenez Alvaro, Laurendeau Matthieu"
 __email__ = "alvaro.gonzalez-jimenez@grenoble-inp.org, laurendeau.matthieu@gmail.com"
 __status__ = "Submitted"
-__brief_large_margin__ = "Class that contains the implementation of the Support Vector Machine"
+__brief_large_margin__ = "Class that contains the implementation of the \
+    Support Vector Machine"
 
-from cvxopt import solvers, matrix, spmatrix, sparse
-import numpy as np
 
+############ Imports ############
+"""
+Libraries necessary to run this file alone.
+"""
+import numpy as np # for arrays operations
+from cvxopt import solvers, matrix, spmatrix, sparse # convex optimization
+solvers.options["show_progress"] = False
 
 class SVM:
-    def fit(gram_matrix, labels, lmda):
-        '''
-        @param gram_matrix: Gran Matrix
-        @param labels: Contains all the labels (-1, 1) to fit the SVM
-        @param lmda: Hyperparameter lambda
-        '''
+    """
+    Class Support Vector Machine
+    """
+    def __init__(self, l):
+        """
+        Construct SVM model
+        @param: lmda: float - Hyperparameter lambda
+        """
+        self.l = l
 
-        #Option to not show the progress of the Cvxopt
-        solvers.options["show_progress"] = False
+    def fit(self, gram_matrix, labels):
+        """
+        Solve:  min_x 1/2 xPx +qx
+            s.t Gx <= h
+                Ax = b
+        @param: gram_matrix: numpy array - Gram Matrix
+                labels: numpy array - Contains all the labels (-1, 1) to fit 
+        the SVM
+        """
 
         # Components for quadratic program problem
         n = len(labels)
-        q = -matrix(labels, (n, 1), tc="d")
-        h = matrix(
-            np.concatenate([np.ones(n) / (2 * lmda * n), np.zeros(n)]).reshape(
-                (2 * n, 1)
-            )
-        )
         P = matrix(gram_matrix)
-        Gtop = spmatrix(labels, range(n), range(n))
-        G = sparse([Gtop, -Gtop])
+        q = -matrix(labels, (n, 1), tc="d")
 
-        #Solving quadratic progam problem
-        sol = solvers.qp(P, q, G, h)["x"]
+        # Constraints
+        G = spmatrix(labels, range(n), range(n)) # diagonal matrix
+        G = sparse([G, -G])
+        h = np.concatenate([np.ones(n) / (2 * self.l * n), np.zeros(n)])
+        h = matrix(h.reshape((2 * n, 1)))
+
+        # Solving quadratic progam problem
+        self.alpha = solvers.qp(P, q, G, h)["x"]
 
         # Return the solution
-        return sol
+        return self.alpha
+
+    def predict(self, gram_matrix, ntr, nte):
+        """
+        Predict class from SVM model
+        @param: gram_matrix: numpy array - Gram Matrix
+                ntr: int - shape of the training set
+                nte: int - shape of the test set
+        """
+        predictions = []
+        for i in range(nte):
+            pred = 0
+            for k, j in enumerate(range(ntr)):
+                pred += self.alpha[k] * gram_matrix[i, j]
+            predictions.append(np.sign(pred))
+        return predictions
+
+def score(predict, label):
+    '''
+    Evaluate performances of the model. Compare predictions and true label
+    @param: predict: numpy array - predictions
+            label: numpy array - real labels of the sequences
+    '''
+    res = 0
+    for i in range(len(label)):
+        res += int(predict[i] == label[i]) / len(label)
+    return res
