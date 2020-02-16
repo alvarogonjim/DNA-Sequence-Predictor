@@ -6,13 +6,15 @@ __version__ = "0.3"
 __maintainer__ = "Gonzalez Jimenez Alvaro, Laurendeau Matthieu"
 __email__ = "alvaro.gonzalez-jimenez@grenoble-inp.org, laurendeau.matthieu@gmail.com"
 __status__ = "Submitted"
-__brief_kernels__ = "Kernels definition."
+__brief_compute_kmer_feature__ = "Kernels definition."
 
 ############ Imports ############
 """
 Libraries necessary to run this file alone.
 """
 import numpy as np # for arrays tricks
+from multiprocessing import Pool, Manager # for multiprocess the code
+from functools import partial # for create partial objec
 
 def linear_kernel(x, y):
     """
@@ -32,6 +34,13 @@ def rbf_kernel(x, y, sigma=3):
     """
     return np.exp(-np.linalg.norm(x - y) ** 2 / (2 * (sigma ** 2)))
 
+def gaussian(x, y, sigma):
+    """
+    Gaussian kernel
+    """
+    return (1 / (np.sqrt(2 * np.pi) * sigma) \
+    * np.exp(-np.linalg.norm(x - y) ** 2 / (2 * sigma ** 2)))
+
 def scalar_product(x, y):
     """
     Scalar product
@@ -41,18 +50,6 @@ def scalar_product(x, y):
         if idx in y:
             res += x[idx] * y[idx]
     return res
-
-def gaussian(x, y, sigma):
-    """
-    Gaussian kernel
-    """
-    return (1 / (np.sqrt(2 * np.pi) * sigma) \
-    * np.exp(-np.linalg.norm(x - y) ** 2 / (2 * sigma ** 2)))
-
-def sparse_gaussian(x, y, sigma=7.8):
-    ps = scalar_product(x, y)
-    norm = ps(x, x) - 2*ps(x, y) + ps(y,y)
-    return 1/(np.sqrt(2*np.pi)*sigma) * np.exp(-norm/(2*sigma**2))
 
 def gram_matrix(train_set_kmer, validation_set_kmer, test_set_kmer, kernel):
     """

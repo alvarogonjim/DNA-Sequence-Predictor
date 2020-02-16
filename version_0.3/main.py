@@ -16,7 +16,7 @@ from tqdm import tqdm
 from DataPipeline import DataPipeline
 from largeMargin import LargeMargin
 from kernel import Kernel
-from utils import kernel_train, kernel_predict, score, split_data
+from utils import kernel_train, kernel_predict, score, split_data, write_predictions
 
 
 print(
@@ -45,7 +45,14 @@ dataset.compute_k_mers(k=9)
 
 dataset.mismatch(k=9, m=1)
 
+# print(dataset.data[0])
+# print(len(dataset.data[0]),len(dataset.data[4]),len(dataset.data[24]), \
+#         len(dataset.data[14]),len(dataset.data[3]),len(dataset.data[5]),\
+#         len(dataset.data[100+43]),len(dataset.data[100+4]),len(dataset.data[100+6]))
+# assert(False)
+
 # print(dataset.data)
+# print(dataset.data[-1])
 # assert(False)
 
 K9 = Kernel(Kernel.mismatch()).gram(dataset.data)
@@ -57,34 +64,64 @@ dataset.compute_k_mers(k=10)
 dataset.mismatch(k=10, m=1)
 K10 = Kernel(Kernel.mismatch()).gram(dataset.data)
 
+# print(dataset.data[0])
+# print(len(dataset.data[0]),len(dataset.data[4]),len(dataset.data[24]), \
+#         len(dataset.data[14]),len(dataset.data[3]),len(dataset.data[5]),\
+#         len(dataset.data[100+43]),len(dataset.data[100+4]),len(dataset.data[100+6]))
+# assert(False)
+
+# print(K10)
+# assert(False)
+
 dataset.compute_k_mers(k=11)
 dataset.mismatch(k=11, m=1)
 K11 = Kernel(Kernel.mismatch()).gram(dataset.data)
 
 
 K = K9 + K10 + K11
+# K = K9
+# np.savetxt("K9.txt",K9)
+# np.savetxt("K10.txt",K10)
+# np.savetxt("K11.txt",K11)
+# np.savetxt("K.txt",K)
 
-print(K9)
-assert(False)
+# print(K)
+# assert(False)
 
 training = [i for i in range(2000)]
-testing = [i for i in range(1000, 2000)]
+testing = [i for i in range(2000, 3000)]
+# training = [i for i in range(300)]
+# testing = [i for i in range(300, 600)]
+# y = y[:300]
 
 # Careful change the lmda
-lmda = 0.00000001
-
+lmda = 0.0001 #0.00000001
+# print(K)
+# print(K[training])
+# print(np.shape(K[training]))
+# print(np.shape(K[training][:, training]))
+# print(y, len(y))
+# assert(False)
 
 alpha = LargeMargin.SVM(K[training][:, training], y, lmda)
-print(alpha)
+# np.savetxt("alpha.txt",alpha)
+# print(alpha)
+# assert(False)
 
 pred0 = []
 for i in tqdm(testing):
+    # print("i", i)
     val = 0
     for k, j in enumerate(training):
+        # print("k", k, "j", j)
+        # print(i, K[i,j])
         val += alpha[k] * K[i, j]
+    # assert(False)
     pred0.append(np.sign(val))
 
-print(score(pred0, y[1000:2000]))
+print(pred0)
+assert(False)
+# print(score(pred0, y[1000:2000]))
 
 print(
     """
@@ -121,8 +158,8 @@ K11 = Kernel(Kernel.mismatch()).gram(dataset.data)
 
 K = K9 + K10 + K11
 
-training = [i for i in range(2000)]
-testing = [i for i in range(2000, 3000)]
+# training = [i for i in range(2000)]
+# testing = [i for i in range(2000, 3000)]
 
 # Careful change the lmda
 lmda = 0.00000001

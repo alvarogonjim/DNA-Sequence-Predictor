@@ -18,39 +18,8 @@ dissimilarity."
 Libraries necessary to run this file alone.
 """
 import pandas as pd  # for manipulate the dataframe
-from multiprocessing import Pool # for multiprocess the code
-from functools import partial # for create partial object
 from itertools import combinations, product # for list operations
 
-# def count_occurence(s, ss):
-#     """
-#     Count occurence of substring in a string (taking care of overlapping)
-#     @param: s: string - source string
-#             ss: string - substring
-#     """
-#     # Initialize count and start to 0 
-#     count = 0
-#     start = 0
-  
-#     # Search through the string till 
-#     # we reach the end of it 
-#     while start < len(s): 
-  
-#         # Check if a substring is present from 
-#         # 'start' position till the end 
-#         flag = s.find(ss, start) 
-  
-#         if flag != -1: 
-#             # If a substring is present, move 'start' to 
-#             # the next position from start of the substring 
-#             start = flag + 1
-  
-#             # Increment the count 
-#             count += 1
-#         else: 
-#             # If no further substring is present 
-#             # return the value of count 
-#             return count 
 
 def list_mismatch(kmer, letters, m=0):
     """
@@ -115,6 +84,7 @@ def apply_kmer_features(data, k, m, letters, full_active_kmer, \
                     list(set(current_mismatch).intersection(full_active_kmer))
                 full_active_mismatch[current_kmer] = active_mismatch
             
+            # Increase the occurence
             for kmer in full_active_mismatch[current_kmer]:
                 if kmer not in seq_kmer:
                     seq_kmer[kmer] = 1
@@ -126,107 +96,25 @@ def apply_kmer_features(data, k, m, letters, full_active_kmer, \
     return data_kmer
 
 
-# def apply_kmer_features(k, letters, m, keep_zeros, full_kmer, s):
-#     """
-#     Apply k-mer features of one sequence s. It constructs a list of dictionaries
-#     where each dictionary represent the number of occurence for one k-mer and 
-#     all its neighbours.
-#     @param: k: int - length of k-mer
-#             letters: list of characters - avalaible letters
-#             m: int - number of mismatch allowed. Default = 0
-#             s: string - current sequence on which we apply k-mer feature
-#             keep_zeros: bool - whether keep neighbours of a k-mer even if it 
-#             does not appear in the sequence. Default = False.
-#     """
-#     # full_kmer = [s[i:i+k] for i in range(len(s) - k + 1)]
-#     occurences = {}
-#     # print(s)
-#     for i in range(len(s) - k + 1):
-#         current_kmer = s[i:i+k]
-#         # if current_kmer in occurences:
-#         #     continue
-#         mismatch = list(list_mismatch(current_kmer,letters,m))
-#         if m != 0:
-#             mismatch += [current_kmer]
-        
-#         # print(mismatch, full_kmer)
+def active_kmer(train_set, validation_set, test_set, k):
+    """
+    Give the list of all the kmers of length k inside all datasets
+    @param: train_set: pandas dataframe - training set
+            validation_set: pandas dataframe - validation set
+            test_set: pandas dataframe - test set
+            k: int - length of the k-mer
+    """
+    data = pd.concat([train_set, validation_set, test_set], \
+        axis=0, ignore_index=True)
+    active_kmer = []
 
-#         mismatch_appeared = list(set(mismatch).intersection(full_kmer))
-#         # print(mismatch, len(mismatch))
-#         print(mismatch_appeared, len(mismatch_appeared))
-#         # print(full_kmer, len(full_kmer))
-#         assert(False)
-#         # mismatch_appeared = [x for ele in mismatch for x in full_kmer if x in ele]
+    for s in data["seq"]:
+        for l in range(len(s) - k + 1):
+            current_kmer = s[l:l+k]
+            # if current_kmer not in active_kmer:
+            active_kmer += [current_kmer]
 
-#         print(mismatch_appeared, len(mismatch_appeared))
-#         assert(i <6)
-#         # words = mismatch
-#         # print(words)
-#         # assert False, mismatch_appeared
-#         for w in mismatch_appeared:
-#             if w in occurences:
-#                 occurences[w] += 1 #count_occurence(s,w)
-#                 # continue
-#             else:
-#                 occurences[w] = 1 #count_occurence(s,w)
-
-#     if not keep_zeros:
-#         occurences = {k: v for k, v in occurences.items() if v != 0}
-    
-#     # print(occurences)
-#     # if s == "GCCTCCCTTGGCACCACGGGAGACCAGTTTTGGAGGGGCGGGGCTGCAGGGGGGCGAGCCCCACTGTCAGGAAGGCTGAAGTTTCGGGGCAGAGTGCTAAA":
-#     #     assert(False)
-#     # print(occurences)
-#     # print(len(occurences))
-#     # assert(False)
-#     return [occurences]
-
-# def apply_kmer_features(k, letters, m, keep_zeros, full_kmer, oui, s):
-#     """
-#     Apply k-mer features of one sequence s. It constructs a list of dictionaries
-#     where each dictionary represent the number of occurence for one k-mer and 
-#     all its neighbours.
-#     @param: k: int - length of k-mer
-#             letters: list of characters - avalaible letters
-#             m: int - number of mismatch allowed. Default = 0
-#             s: string - current sequence on which we apply k-mer feature
-#             keep_zeros: bool - whether keep neighbours of a k-mer even if it 
-#             does not appear in the sequence. Default = False.
-#     """
-#     # full_kmer = [s[i:i+k] for i in range(len(s) - k + 1)]
-#     occurences = {}
-#     # print(s)
-#     for i in range(len(s) - k + 1):
-#         current_kmer = s[i:i+k]
-
-#         mismatch_appeared = oui[current_kmer]
-#         # print(mismatch)
-#         # print(full_kmer, len(full_kmer))
-#         # assert(False)
-#         # mismatch_appeared = [x for ele in mismatch for x in full_kmer if x in ele]
-
-#         # print(mismatch_appeared, len(mismatch_appeared))
-#         # assert(False)
-#         # words = mismatch
-#         # print(words)
-#         # assert False, mismatch_appeared
-#         for w in mismatch_appeared:
-#             if w in occurences:
-#                 occurences[w] += 1 #count_occurence(s,w)
-#                 # continue
-#             else:
-#                 occurences[w] = 1 #count_occurence(s,w)
-
-#     if not keep_zeros:
-#         occurences = {k: v for k, v in occurences.items() if v != 0}
-    
-#     # print(occurences)
-#     # if s == "GCCTCCCTTGGCACCACGGGAGACCAGTTTTGGAGGGGCGGGGCTGCAGGGGGGCGAGCCCCACTGTCAGGAAGGCTGAAGTTTCGGGGCAGAGTGCTAAA":
-#     #     assert(False)
-#     print(occurences)
-#     print(len(occurences))
-#     assert(False)
-#     return [occurences]
+    return list(dict.fromkeys(active_kmer))
 
 
 def list_all_kmer(features, letters, feature, n, k, init_k):
@@ -260,44 +148,6 @@ def list_all_kmer(features, letters, feature, n, k, init_k):
                 return features
 
 
-def active_kmer(train_set, validation_set, test_set, k):
-    """
-    Give the list of all the kmers of length k inside all datasets
-    @param: train_set: pandas dataframe - training set
-            validation_set: pandas dataframe - validation set
-            test_set: pandas dataframe - test set
-            k: int - length of the k-mer
-    """
-    data = pd.concat([train_set, validation_set, test_set], \
-        axis=0, ignore_index=True)
-    active_kmer = []
-
-    for s in data["seq"]:
-        for l in range(len(s) - k + 1):
-            current_kmer = s[l:l+k]
-            # if current_kmer not in active_kmer:
-            active_kmer += [current_kmer]
-
-    return list(dict.fromkeys(active_kmer))
-
-# def active_mismatch_kmer(full_active_kmer, letters, m):
-#     active_mismatch_kmer = {}
-#     for kmer in full_active_kmer:
-#         mismatch = list(list_mismatch(kmer,letters,m))
-#         if m != 0:
-#             mismatch += [kmer]
-
-#         active_mismatch_kmer[kmer] = list(set(mismatch).intersection(full_active_kmer))
-#     return active_mismatch_kmer
-
-# def active_mismatch_kmer(letters, m, full_active_kmer, kmer):
-#     mismatch = list(list_mismatch(kmer,letters,m))
-#     if m != 0:
-#         mismatch += [kmer]
-
-#     return kmer, list(set(mismatch).intersection(full_active_kmer))
-
-
 def compute_kmer_feature(train_set, validation_set, test_set, k, m=0):
     """
     Create the k-mer feature of length k for each set
@@ -309,6 +159,7 @@ def compute_kmer_feature(train_set, validation_set, test_set, k, m=0):
             Default = 0 --> exact k-mer subsequences
     """
     letters = ['A', 'T', 'C', 'G'] # DNA letters
+    letters = ['G', 'A', 'T', 'C'] # DNA letters
     # List all possible k-mer of length k according to the 4 DNA letters
     full_kmer = []
     n = len(letters)
@@ -322,24 +173,24 @@ def compute_kmer_feature(train_set, validation_set, test_set, k, m=0):
     full_active_mismatch = {}
 
     # Apply k-mer features to train set
-    print("\t\tApplying feature kmer map on training data: ", end="")
+    print("\t\tApplying kmer feature on training data: ", end="")
     train_set_kmer = apply_kmer_features(train_set["seq"], k, m, letters, \
         full_active_kmer, full_active_mismatch)
-    print("\r\t\tFeature kmer map applied on training data.      ")
+    print("\r\t\tKmer feature applied on training data.      ")
 
 
     # Apply k-mer features to validation set
     validation_set_kmer = []
     if not validation_set.empty:
-        print("\t\tApplying feature kmer map on validation data: ", end="")
+        print("\t\tApplying kmer feature on validation data: ", end="")
         validation_set_kmer = apply_kmer_features(validation_set["seq"], k, m, letters, \
             full_active_kmer, full_active_mismatch)
-        print("\r\t\tFeature kmer map applied on validation data.      ")
+        print("\r\t\tKmer feature applied on validation data.      ")
 
         # Apply k-mer features to test set
-    print("\t\tApplying feature kmer map on test data: ", end="")
+    print("\t\tApplying kmer feature on test data: ", end="")
     test_set_kmer = apply_kmer_features(test_set["seq"], k, m, letters, \
         full_active_kmer, full_active_mismatch)
-    print("\r\t\tFeature kmer map applied on test data.      ")
+    print("\r\t\tKmer feature applied on test data.      ")
 
     return train_set_kmer, validation_set_kmer, test_set_kmer

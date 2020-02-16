@@ -2,4 +2,7 @@ Python package required to run the code:
 numpy
 itertools
 pandas
+matplotlib
+multiprocessing
+functools
 cvxopt
