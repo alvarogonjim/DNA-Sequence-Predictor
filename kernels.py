@@ -50,8 +50,7 @@ def gaussian(x, y, sigma):
     * np.exp(-np.linalg.norm(x - y) ** 2 / (2 * sigma ** 2)))
 
 def sparse_gaussian(x, y, sigma=7.8):
-    ps = scalar_product(x, y)
-    norm = ps(x, x) - 2*ps(x, y) + ps(y,y)
+    norm = scalar_product(x, x) - 2*scalar_product(x, y) + scalar_product(y,y)
     return 1/(np.sqrt(2*np.pi)*sigma) * np.exp(-norm/(2*sigma**2))
 
 def gram_matrix(train_set_kmer, validation_set_kmer, test_set_kmer, kernel):
