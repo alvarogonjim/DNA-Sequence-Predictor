@@ -42,7 +42,7 @@ def scalar_product(x, y):
             res += x[idx] * y[idx]
     return res
 
-def gaussian(x, y, sigma):
+def gaussian(x, y, sigma=6):
     """
     Gaussian kernel
     """
