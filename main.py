@@ -121,7 +121,7 @@ def predict_dataset(dataset_numbers, kmer_length, mismatch, lambdas, kernels, \
 
             # Check if the gram matrix was already computed
             file_name = "precomputed"+current_dataset_number+"/" \
-                +str(validation)+"_"+str(k[step])+"_"+str(m[step])+str(kernel)[10:18]
+                +str(validation)+"_"+str(k[step])+"_"+str(m[step])+"_"+str(kernel)[10:18]
 
             print(style.italic + style.blue + "\tCompute kmers: length=" \
                 + str(k[step]) + ", mismatch=" + str(m[step]) + style.normal)
@@ -172,7 +172,7 @@ def predict_dataset(dataset_numbers, kmer_length, mismatch, lambdas, kernels, \
                 + str(validation) + " |")
             for i in range(len(k)):
                 f.write(" k " + str(k[i]) + ", m " + str(m[i]))
-            f.write(" | lambda = " + str(l) + "\n")
+            f.write(" | lambda = " + str(l) + " with " + str(kernel)[10:18] + "\n")
             f.close()
 
         # Predict on test set
