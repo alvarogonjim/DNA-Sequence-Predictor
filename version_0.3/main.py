@@ -36,7 +36,6 @@ y = 2.0 * np.array(labels["Bound"]) - 1
 test = DataPipeline("data/Xte" + fname + ".csv")
 
 
-
 dataset.X = pd.concat([dataset.X, test.X], axis=0, ignore_index=True)
 # dataset.X = pd.concat([dataset.X], axis=0, ignore_index=True)
 
@@ -95,7 +94,7 @@ testing = [i for i in range(2000, 3000)]
 # y = y[:300]
 
 # Careful change the lmda
-lmda = 0.0001 #0.00000001
+lmda = 0.0001  # 0.00000001
 # print(K)
 # print(K[training])
 # print(np.shape(K[training]))
@@ -120,7 +119,7 @@ for i in tqdm(testing):
     pred0.append(np.sign(val))
 
 print(pred0)
-assert(False)
+assert False
 # print(score(pred0, y[1000:2000]))
 
 print(

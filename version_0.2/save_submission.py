@@ -10,7 +10,7 @@
 """
 Libraries necessary to run this file alone.
 """
-import pandas as pd # for data management
+import pandas as pd  # for data management
 
 ### TO DELETE
 def reverse_predictions(test_predictions):
@@ -19,8 +19,11 @@ def reverse_predictions(test_predictions):
     @param: test_predictions: numpy array - predictions
     """
     print("Reverse predictions.")
-    return ~test_predictions+2
+    return ~test_predictions + 2
+
+
 ### TO DELETE
+
 
 def post_procesing(test_predictions):
     """
@@ -28,7 +31,8 @@ def post_procesing(test_predictions):
     @param: test_predictions: numpy array - predictions
     """
     print("Post precessing predictions.")
-    return test_predictions # nothing to do
+    return test_predictions  # nothing to do
+
 
 def save_submission(test_predictions, title=""):
     """
@@ -36,14 +40,17 @@ def save_submission(test_predictions, title=""):
     @param: test_predictions: numpy array - predictions to submit
             title: string - title of the submitted file. Default = ""
     """
-    test_predictions = pd.DataFrame({"Bound": test_predictions}) # convert in pandas df
-    test_predictions.index.name = 'Id'
+    test_predictions = pd.DataFrame({"Bound": test_predictions})  # convert in pandas df
+    test_predictions.index.name = "Id"
     test_predictions = post_procesing(test_predictions)
     # test_predictions = reverse_predictions(test_predictions) # TO DELETE
-    test_predictions.to_csv("Yte_"+title+".csv", sep=",", encoding="utf-8", index=True)
+    test_predictions.to_csv(
+        "Yte_" + title + ".csv", sep=",", encoding="utf-8", index=True
+    )
     print("Prediction saved.")
 
+
 ############ Main ############
-''' If the file is executed separetely '''
+""" If the file is executed separetely """
 if __name__ == "__main__":
     print("This file need prediciton on test data set to be run.")
