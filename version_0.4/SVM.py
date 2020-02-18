@@ -14,14 +14,17 @@ __brief_large_margin__ = "Class that contains the implementation of the \
 """
 Libraries necessary to run this file alone.
 """
-import numpy as np # for arrays operations
-from cvxopt import solvers, matrix, spmatrix, sparse # convex optimization
+import numpy as np  # for arrays operations
+from cvxopt import solvers, matrix, spmatrix, sparse  # convex optimization
+
 solvers.options["show_progress"] = False
+
 
 class SVM:
     """
     Class Support Vector Machine
     """
+
     def __init__(self, l):
         """
         Construct SVM model
@@ -45,7 +48,7 @@ class SVM:
         q = -matrix(labels, (n, 1), tc="d")
 
         # Constraints
-        G = spmatrix(labels, range(n), range(n)) # diagonal matrix
+        G = spmatrix(labels, range(n), range(n))  # diagonal matrix
         G = sparse([G, -G])
         h = np.concatenate([np.ones(n) / (2 * self.l * n), np.zeros(n)])
         h = matrix(h.reshape((2 * n, 1)))
@@ -71,12 +74,13 @@ class SVM:
             predictions.append(np.sign(pred))
         return predictions
 
+
 def score(predict, label):
-    '''
+    """
     Evaluate performances of the model. Compare predictions and true label
     @param: predict: numpy array - predictions
             label: numpy array - real labels of the sequences
-    '''
+    """
     res = 0
     for i in range(len(label)):
         res += int(predict[i] == label[i]) / len(label)

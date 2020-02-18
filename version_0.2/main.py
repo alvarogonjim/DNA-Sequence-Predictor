@@ -16,42 +16,53 @@ so we limit ourself to use only common libraries in python as following.
 We have the right to work with some linear algebra and optimization libraries.
 """
 
-import numpy as np # for arrays tricks
-import os ; import glob; import pandas as pd # for read the data
-import matplotlib.pyplot as plt # for plots
+import numpy as np  # for arrays tricks
+import os
+import glob
+import pandas as pd  # for read the data
+import matplotlib.pyplot as plt  # for plots
 
 ############ Parameters ############
-''' Parameters to tuned following, the problem, the data and the understanding
-of the project '''
-k = 5 # the length of the k-mer
-epochs = 6000 # number of epochs to train the model
+""" Parameters to tuned following, the problem, the data and the understanding
+of the project """
+k = 5  # the length of the k-mer
+epochs = 6000  # number of epochs to train the model
 
 ############ Get data set ############
-''' Get train, validation, test set and label from given data 
-under panda dataframe '''
+""" Get train, validation, test set and label from given data 
+under panda dataframe """
 from get_data_set import get_data_set
 
 print("****** LOADING DATA ******")
 train_set, validation_set, test_set, label = get_data_set()
 
-print("\n Train set (" + str(train_set.shape[0]) + "), validation set (" \
-        + str(validation_set.shape[0]) + "), test set (" + str(test_set.shape[0]) \
-        + ") and label (" + str(label.shape[0]) + ") loaded.")
+print(
+    "\n Train set ("
+    + str(train_set.shape[0])
+    + "), validation set ("
+    + str(validation_set.shape[0])
+    + "), test set ("
+    + str(test_set.shape[0])
+    + ") and label ("
+    + str(label.shape[0])
+    + ") loaded."
+)
 print("****** DATA LOADED ******\n")
 
 
 ############ Create features ############
-''' Create features in train, validation and test set '''
+""" Create features in train, validation and test set """
 from create_k_mer_features import create_k_mer_features
 
 print("****** CREATE FEATURES ******")
-train_set, validation_set, test_set = create_k_mer_features(train_set, \
-                        validation_set, test_set, k)
+train_set, validation_set, test_set = create_k_mer_features(
+    train_set, validation_set, test_set, k
+)
 print("****** FEATURES CREATED ******\n")
 
 
 ############ Training ############
-''' Train the model using logistic regression '''
+""" Train the model using logistic regression """
 from models import logistic_regression_model
 from models import SVM
 from models import gaussian_process_clissifier
@@ -66,7 +77,7 @@ model.save()
 print("****** TRAINING ******\n")
 
 ############ Predict on test set and save result ############
-''' Predict on test set and save result for kaggle submission '''
+""" Predict on test set and save result for kaggle submission """
 from save_submission import save_submission
 
 print("****** PREDICT ON TEST SET AND SAVE RESULT ******")

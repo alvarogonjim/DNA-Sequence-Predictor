@@ -42,7 +42,7 @@ class Kernel:
             for idx in x:
                 if idx in y:
                     # if idx == "GGG":
-                        # print(x[idx],y[idx])
+                    # print(x[idx],y[idx])
                     prod_scal += x[idx] * y[idx]
                     # print(idx, prod_scal)
             return prod_scal

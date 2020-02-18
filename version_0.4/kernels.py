@@ -12,9 +12,10 @@ __brief_compute_kmer_feature__ = "Kernels definition."
 """
 Libraries necessary to run this file alone.
 """
-import numpy as np # for arrays tricks
-from multiprocessing import Pool, Manager # for multiprocess the code
-from functools import partial # for create partial objec
+import numpy as np  # for arrays tricks
+from multiprocessing import Pool, Manager  # for multiprocess the code
+from functools import partial  # for create partial objec
+
 
 def linear_kernel(x, y):
     """
@@ -22,11 +23,13 @@ def linear_kernel(x, y):
     """
     return np.dot(x, y)
 
+
 def polynomial_kernel(x, y, p=3):
     """
     Polynomial kernel
     """
     return (1 + np.dot(x, y)) ** p
+
 
 def rbf_kernel(x, y, sigma=3):
     """
@@ -34,12 +37,17 @@ def rbf_kernel(x, y, sigma=3):
     """
     return np.exp(-np.linalg.norm(x - y) ** 2 / (2 * (sigma ** 2)))
 
+
 def gaussian(x, y, sigma):
     """
     Gaussian kernel
     """
-    return (1 / (np.sqrt(2 * np.pi) * sigma) \
-    * np.exp(-np.linalg.norm(x - y) ** 2 / (2 * sigma ** 2)))
+    return (
+        1
+        / (np.sqrt(2 * np.pi) * sigma)
+        * np.exp(-np.linalg.norm(x - y) ** 2 / (2 * sigma ** 2))
+    )
+
 
 def scalar_product(x, y):
     """
@@ -51,6 +59,7 @@ def scalar_product(x, y):
             res += x[idx] * y[idx]
     return res
 
+
 def gram_matrix(train_set_kmer, validation_set_kmer, test_set_kmer, kernel):
     """
     Compute Gram matrix on all the datasets
@@ -60,7 +69,9 @@ def gram_matrix(train_set_kmer, validation_set_kmer, test_set_kmer, kernel):
     G = np.zeros((n, n))
     for i in range(n):
         for j in range(i + 1):
-            print(str(round((i*n+j)/(n*n)*100)).zfill(3) + "%", end="\b\b\b\b")
+            print(
+                str(round((i * n + j) / (n * n) * 100)).zfill(3) + "%", end="\b\b\b\b"
+            )
             K = kernel(data[i], data[j])
             G[i, j] = K
             G[j, i] = K

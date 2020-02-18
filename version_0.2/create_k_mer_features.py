@@ -5,6 +5,7 @@
 @brief: Create the k-mer features for the DNA data given on kaggle
 """
 
+
 def apply_k_mer_features(data, features, out_print=""):
     """
     Apply k-mer features to the data. It constructs the distribution matrix of 
@@ -16,16 +17,17 @@ def apply_k_mer_features(data, features, out_print=""):
             features: list of string - full list of k-mer = label in the matrix
             out_print: string - line to print for see the progress. Default = ""
     """
-    c = 0 # counter to print the progress
+    c = 0  # counter to print the progress
     for i in features:
         c += 1
-        print(out_print + str(round(c*100/len(features),3)) + "%", end="\r")
-        data[i] = data.seq.str.count(i) # count occurences
+        print(out_print + str(round(c * 100 / len(features), 3)) + "%", end="\r")
+        data[i] = data.seq.str.count(i)  # count occurences
     print("")
-    data = data.drop("seq", axis=1) 
-    data=(data-data.mean())/data.std() # normalization
+    data = data.drop("seq", axis=1)
+    data = (data - data.mean()) / data.std()  # normalization
     # data=(data-data.min())/(data.max()-data.min()) # normalization
     return data
+
 
 def list_all_k_mer(features, letters, feature, n, k, init_k):
     """
@@ -43,10 +45,10 @@ def list_all_k_mer(features, letters, feature, n, k, init_k):
             init_k: int - initial k used for the final return
     """
     # Finishing the word and put in the features list
-    if (k == 0):
+    if k == 0:
         features += [feature]
         return features
-    
+
     for i in range(n):
         # Adding letter in the current word
         new_feature = feature + letters[i]
@@ -54,12 +56,11 @@ def list_all_k_mer(features, letters, feature, n, k, init_k):
         full_features = list_all_k_mer(features, letters, new_feature, n, k - 1, init_k)
         # Final return
         if full_features is not None:
-            if full_features[-1] == init_k*letters[-1]:
+            if full_features[-1] == init_k * letters[-1]:
                 return features
 
 
-def create_k_mer_features(train_set, \
-                        validation_set, test_set, k):
+def create_k_mer_features(train_set, validation_set, test_set, k):
     """
     Create the k-mer features of length k for each set
     @param: train_set: pandas dataframe - training set
@@ -69,7 +70,7 @@ def create_k_mer_features(train_set, \
     """
     print("Create k-mer features.")
     features = []
-    letters = ['A', 'T', 'C', 'G']
+    letters = ["A", "T", "C", "G"]
     n = len(letters)
     feature = ""
     features = list_all_k_mer(features, letters, feature, n, k, k)
@@ -88,7 +89,8 @@ def create_k_mer_features(train_set, \
 
     return train_set, validation_set, test_set
 
+
 ############ Main ############
-''' If the file is executed separetely '''
+""" If the file is executed separetely """
 if __name__ == "__main__":
     print("This file need train data and test data set at least to be run.")

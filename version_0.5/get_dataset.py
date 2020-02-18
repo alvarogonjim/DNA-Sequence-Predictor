@@ -12,9 +12,10 @@ __brief_get_dataset__ = "Read the data given for the kaggle project."
 """
 Libraries necessary to run this file alone.
 """
-import pandas as pd # for construct the data
+import pandas as pd  # for construct the data
 
-def split_train_valid(data,valid,shuffle=True):
+
+def split_train_valid(data, valid, shuffle=True):
     """
     Split the data in training and validation set
     @param: data: pandas dataframe - data to split
@@ -22,16 +23,23 @@ def split_train_valid(data,valid,shuffle=True):
             shuffle: bool - whether or not to shuffle the data. Default = True
     """
     # Split
-    if ((valid > 0) and (valid<100)):
-        print("\t\tSplit data in training set (" + str(100-valid) + "%)" \
-               + " and validation set (" + str(valid) + "%)", end="")
+    if (valid > 0) and (valid < 100):
+        print(
+            "\t\tSplit data in training set ("
+            + str(100 - valid)
+            + "%)"
+            + " and validation set ("
+            + str(valid)
+            + "%)",
+            end="",
+        )
         if shuffle:
             print(" after shuffling.")
-            validation_set = data.sample(frac=valid/100) #, random_state=seed)
+            validation_set = data.sample(frac=valid / 100)  # , random_state=seed)
         else:
             print(".")
             l = data.shape[0]
-            validation_set = data.iloc[int(l-valid*l/100):,:]
+            validation_set = data.iloc[int(l - valid * l / 100) :, :]
         train_set = data.drop(validation_set.index)
         print("\t\tFinal train set: " + str(train_set.shape[0]))
         print("\t\tFinal validation set: " + str(validation_set.shape[0]))
@@ -41,11 +49,15 @@ def split_train_valid(data,valid,shuffle=True):
         validation_set = pd.DataFrame()
     # Error on valid number
     else:
-        print("Error: split percents number is not valid. It should an integer" \
-                + " between >0 and <100. Given: " + valid)
+        print(
+            "Error: split percents number is not valid. It should an integer"
+            + " between >0 and <100. Given: "
+            + valid
+        )
     return train_set, validation_set
 
-def get_dataset(number,folder="data/",trunc=-1,shuffle=True,valid=33):
+
+def get_dataset(number, folder="data/", trunc=-1, shuffle=True, valid=33):
     """
     Read data in the format given for the Kaggle challenge and
     return the train, validation and test set.
@@ -63,24 +75,24 @@ def get_dataset(number,folder="data/",trunc=-1,shuffle=True,valid=33):
     """
 
     # Get training data set
-    train_set = pd.read_csv(folder+"Xtr"+number+".csv",index_col=0)
-    if (trunc != -1):
-        train_set = train_set.iloc[:trunc,:]
+    train_set = pd.read_csv(folder + "Xtr" + number + ".csv", index_col=0)
+    if trunc != -1:
+        train_set = train_set.iloc[:trunc, :]
     print("\t\tLoad " + str(train_set.shape[0]) + " training data" + ".")
 
     # Split training data set and validation data set
-    train_set, validation_set = split_train_valid(train_set,valid,shuffle)
+    train_set, validation_set = split_train_valid(train_set, valid, shuffle)
 
     # Get test data set
-    test_set = pd.read_csv(folder+"Xte"+number+".csv",index_col=0)
-    if (trunc != -1):
-        test_set = test_set.iloc[:trunc,:]
+    test_set = pd.read_csv(folder + "Xte" + number + ".csv", index_col=0)
+    if trunc != -1:
+        test_set = test_set.iloc[:trunc, :]
     print("\t\tLoad " + str(test_set.shape[0]) + " test data" + ".")
 
     # Get label and rane it between -1 and 1
-    label = pd.read_csv(folder+"Ytr"+number+".csv",index_col=0)*2 -1
-    if (trunc != -1):
-        label = label.iloc[:trunc,:]
+    label = pd.read_csv(folder + "Ytr" + number + ".csv", index_col=0) * 2 - 1
+    if trunc != -1:
+        label = label.iloc[:trunc, :]
     print("\t\tLoad " + str(label.shape[0]) + " label" + ".")
 
     return train_set, validation_set, test_set, label

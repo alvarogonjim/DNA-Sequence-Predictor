@@ -23,56 +23,89 @@ We have the right to work with some linear algebra and optimization libraries.
 from os import path
 
 # Pre-installed library: (python3 -m pip install ...)
-import numpy as np # for arrays operations
-from itertools import combinations, product # for list operations
-import pandas as pd # for manipulate the dataframe
-from cvxopt import solvers, matrix, spmatrix, sparse # convex optimization
+import numpy as np  # for arrays operations
+from itertools import combinations, product  # for list operations
+import pandas as pd  # for manipulate the dataframe
+from cvxopt import solvers, matrix, spmatrix, sparse  # convex optimization
 
 
 # Handmade:
-''' Get train, validation, test set and label from the given data
-under panda dataframe '''
+""" Get train, validation, test set and label from the given data
+under panda dataframe """
 from get_dataset import get_dataset
-''' Create features in train, validation and test set '''
+
+""" Create features in train, validation and test set """
 from compute_kmer_feature import compute_kmer_feature
+<<<<<<< HEAD
+
+""" Define kernel methods """
+from kernels import gram_matrix, scalar_product, sparse_gaussian
+
+""" Build SVM model """
+=======
 ''' Define kernel methods '''
 from kernels import gram_matrix, scalar_product, sparse_gaussian, gaussian
 ''' Build SVM model '''
+>>>>>>> b99232c756976c84d493376ad2dfe1586880c60e
 from svm import SVM, score
 
 # Fancy print in the console
 class style:
-    red = '\033[91m'
-    blue = '\033[94m'
-    green = '\033[92m'
-    yellow = '\033[93m'
-    bold = '\033[1m'
-    italic = '\033[3m'
-    mono = '\033[2m'
-    underline = '\033[4m'
-    normal = '\033[0m'
+    red = "\033[91m"
+    blue = "\033[94m"
+    green = "\033[92m"
+    yellow = "\033[93m"
+    bold = "\033[1m"
+    italic = "\033[3m"
+    mono = "\033[2m"
+    underline = "\033[4m"
+    normal = "\033[0m"
+
 
 # ############ Console information ############
-print(style.mono + "The project aim to predict whether a DNA sequencies " \
-    + "a binding site to a specific transcription factor. \nIn the context of " \
-    + "this competition, the goal is to gain practical experience with machine " \
-    + "learning and so no external libraries are allowed unless classical python " \
-    + "toolkit and some optimization packages. We have used the following one, " \
-    + "which are needed to run the file: " + style.normal)
+print(
+    style.mono
+    + "The project aim to predict whether a DNA sequencies "
+    + "a binding site to a specific transcription factor. \nIn the context of "
+    + "this competition, the goal is to gain practical experience with machine "
+    + "learning and so no external libraries are allowed unless classical python "
+    + "toolkit and some optimization packages. We have used the following one, "
+    + "which are needed to run the file: "
+    + style.normal
+)
 f = open("requirements.txt", "r")
 packages = f.readlines()[1:]
 for p in packages:
-    print("|"+p[:-1]+"|", end="")
-print(style.mono + "\nThe study has three different datasets which we treat " \
-    + "independently. For each of them, we map the training, validation and test " \
-    + "set on kmer feature, then compute a gram matrix and finally use a SVM " \
-    + "model to predict the solution. \nThe steps of the run are display on the " \
-    + "console, as well as the specific parameters for each datasets.\n" \
-    + style.underline + __author__ + " | " + __date__ + style.normal)
+    print("|" + p[:-1] + "|", end="")
+print(
+    style.mono
+    + "\nThe study has three different datasets which we treat "
+    + "independently. For each of them, we map the training, validation and test "
+    + "set on kmer feature, then compute a gram matrix and finally use a SVM "
+    + "model to predict the solution. \nThe steps of the run are display on the "
+    + "console, as well as the specific parameters for each datasets.\n"
+    + style.underline
+    + __author__
+    + " | "
+    + __date__
+    + style.normal
+)
 
 ############ Main functions ############
+<<<<<<< HEAD
+def predict_dataset(
+    dataset_numbers,
+    kmer_length,
+    mismatch,
+    lambdas,
+    truncation=-1,
+    shuffle=False,
+    validation=24,
+):
+=======
 def predict_dataset(dataset_numbers, kmer_length, mismatch, lambdas, kernels, \
     truncation = -1, shuffle = False, validation = 24):
+>>>>>>> b99232c756976c84d493376ad2dfe1586880c60e
     """
     Function to predict the label on the datasets with different 
     hyperparameters. 
@@ -96,59 +129,107 @@ def predict_dataset(dataset_numbers, kmer_length, mismatch, lambdas, kernels, \
 
         current_dataset_number = str(dataset_numbers[pred_i])
 
-        print(style.bold + style.red + "Dataset " + \
-            current_dataset_number + style.normal)
+        print(
+            style.bold + style.red + "Dataset " + current_dataset_number + style.normal
+        )
 
         # Get hyperparameter
+<<<<<<< HEAD
+        k = kmer_length[pred_i]  # the different length of kmer
+        m = mismatch[pred_i]  # number of the different mismatch allowed
+        l = lambdas[pred_i]  # regularization parameter
+=======
         k = kmer_length[pred_i] # the different length of kmer
         m = mismatch[pred_i] # number of the different mismatch allowed
         l = lambdas[pred_i] # regularization parameter
         kernel = kernels[pred_i] # kernel
+>>>>>>> b99232c756976c84d493376ad2dfe1586880c60e
 
         # Initialization of the gram matrix
         gm = 0
 
         # Loading data
         print(style.italic + style.blue + "\tBuild datasets" + style.normal)
-        train_set, validation_set, test_set, label = get_dataset(current_dataset_number, \
-            folder="data/",trunc=truncation, shuffle=shuffle,valid=validation)
-        label_training = np.array(label.iloc[ \
-            pd.Index(label.index).get_indexer(train_set.index)])
-        label_validation = np.array(label.iloc[ \
-            pd.Index(label.index).get_indexer(validation_set.index)])
+        train_set, validation_set, test_set, label = get_dataset(
+            current_dataset_number,
+            folder="data/",
+            trunc=truncation,
+            shuffle=shuffle,
+            valid=validation,
+        )
+        label_training = np.array(
+            label.iloc[pd.Index(label.index).get_indexer(train_set.index)]
+        )
+        label_validation = np.array(
+            label.iloc[pd.Index(label.index).get_indexer(validation_set.index)]
+        )
 
         for step in range(len(k)):
 
             # Check if the gram matrix was already computed
+<<<<<<< HEAD
+            file_name = (
+                "precomputed"
+                + current_dataset_number
+                + "/"
+                + str(validation)
+                + "_"
+                + str(k[step])
+                + "_"
+                + str(m[step])
+            )
+
+            print(
+                style.italic
+                + style.blue
+                + "\tCompute kmers: length="
+                + str(k[step])
+                + ", mismatch="
+                + str(m[step])
+                + style.normal
+            )
+=======
             file_name = "precomputed"+current_dataset_number+"/" \
                 +str(validation)+"_"+str(k[step])+"_"+str(m[step])+"_"+str(kernel)[10:18]
 
             print(style.italic + style.blue + "\tCompute kmers: length=" \
                 + str(k[step]) + ", mismatch=" + str(m[step]) + style.normal)
+>>>>>>> b99232c756976c84d493376ad2dfe1586880c60e
 
             if not path.exists(file_name):
-                train_set_kmer, validation_set_kmer, test_set_kmer = \
-                    compute_kmer_feature(train_set, validation_set, test_set, \
-                        k[step], m[step])
+                (
+                    train_set_kmer,
+                    validation_set_kmer,
+                    test_set_kmer,
+                ) = compute_kmer_feature(
+                    train_set, validation_set, test_set, k[step], m[step]
+                )
 
                 print("\t\tComputing Gram matrix: ", end="")
+<<<<<<< HEAD
+                actual_gm = gram_matrix(
+                    train_set_kmer, validation_set_kmer, test_set_kmer, scalar_product
+                )
+=======
                 actual_gm = gram_matrix(train_set_kmer, validation_set_kmer, \
                     test_set_kmer, kernel)
+>>>>>>> b99232c756976c84d493376ad2dfe1586880c60e
                 print("\r\t\tGram matrix computed.       ")
 
-                np.savetxt(file_name,actual_gm)
-            
+                np.savetxt(file_name, actual_gm)
+
             else:
                 actual_gm = np.loadtxt(file_name)
                 print("\r\t\tGram matrix loaded.")
 
             gm += actual_gm
 
-
         # Reshape data
-        train_set_gm = gm[:train_set.shape[0],:train_set.shape[0]]
-        validation_set_gm = gm[train_set.shape[0]:-test_set.shape[0],:train_set.shape[0]]
-        test_set_gm = gm[-test_set.shape[0]:,:train_set.shape[0]]
+        train_set_gm = gm[: train_set.shape[0], : train_set.shape[0]]
+        validation_set_gm = gm[
+            train_set.shape[0] : -test_set.shape[0], : train_set.shape[0]
+        ]
+        test_set_gm = gm[-test_set.shape[0] :, : train_set.shape[0]]
         label_training = np.squeeze(label_training)
         label_validation = np.squeeze(label_validation)
 
@@ -158,18 +239,23 @@ def predict_dataset(dataset_numbers, kmer_length, mismatch, lambdas, kernels, \
         model = SVM(l)
         alpha = model.fit(train_set_gm, label_training)
 
-        if  not validation_set.empty:
+        if not validation_set.empty:
             # Compute the performances on the validation set
             print("\t\tCompute the performances on the validation set")
             predictions_valid = model.predict(validation_set_gm)
 
             # Score
-            sc = str(round(score(predictions_valid, label_validation),3)*100)
-            print("\t\tScore: "+ sc + "%")
+            sc = str(round(score(predictions_valid, label_validation), 3) * 100)
+            print("\t\tScore: " + sc + "%")
             f = open("score.txt", "a+")
             f.write("SCORE = " + sc)
-            f.write(" $ Dataset: " + current_dataset_number + " - Validation = " \
-                + str(validation) + " |")
+            f.write(
+                " $ Dataset: "
+                + current_dataset_number
+                + " - Validation = "
+                + str(validation)
+                + " |"
+            )
             for i in range(len(k)):
                 f.write(" k " + str(k[i]) + ", m " + str(m[i]))
             f.write(" | lambda = " + str(l) + " with " + str(kernel)[10:18] + "\n")
@@ -191,16 +277,29 @@ def save_result(predictions, name):
     print(style.bold + style.red + "Final results" + style.normal)
     final_predictions = predictions
     final_predictions = pd.DataFrame({"Bound": final_predictions})
-    final_predictions = (final_predictions+1)/2
+    final_predictions = (final_predictions + 1) / 2
     final_predictions.index.name = "Id"
     final_predictions.to_csv(name, sep=",", encoding="utf-8", index=True)
-    print(style.italic + style.blue + "\tPrediction saved under " \
-        + name + style.normal)
+    print(style.italic + style.blue + "\tPrediction saved under " + name + style.normal)
+
 
 ############ Main ############
-''' Make some benchmark '''
+""" Make some benchmark """
 if __name__ == "__main__":
     ############ Predictions ############
+<<<<<<< HEAD
+    dataset_numbers = [0, 1, 2]
+    kmer_length = [[10], [10], [10, 11]]
+    mismatch = [[1], [1], [1, 1]]
+    lambdas = [0.4, 0.45, 0.3]
+    # dataset_numbers = [0]
+    # kmer_length = [[6]]
+    # mismatch = [[1]]
+    # lambdas = [0.000001]
+    predictions = predict_dataset(
+        dataset_numbers, kmer_length, mismatch, lambdas, validation=0, shuffle=True
+    )
+=======
     dataset_numbers = [0, 0, 0, 1, 1, 1, 2, 2, 2]
     kmer_length = [[10], [10], [6, 7, 8, 9, 10, 11, 12], [9, 10], [10], \
         [10, 11], [9, 10, 11], [3], [10]]
@@ -212,6 +311,7 @@ if __name__ == "__main__":
             scalar_product, scalar_product, scalar_product]
     predictions = predict_dataset(dataset_numbers, kmer_length, mismatch, lambdas, \
         kernels, truncation = -1, shuffle = False, validation = 24)
+>>>>>>> b99232c756976c84d493376ad2dfe1586880c60e
 
     ############ Save results ############
     submit = predictions[0] + predictions[1] + predictions[2]

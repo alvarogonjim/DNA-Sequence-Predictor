@@ -26,4 +26,8 @@ kernels, truncation = -1, shuffle = False, validation = 0)
 
 ############ Save results ############
 submit = predictions[0] + predictions[1] + predictions[2]
+<<<<<<< HEAD
+save_result(submit, "Yte_GONZALEZ_LAURENDEAU_kaggle_submission.csv")
+=======
 save_result(submit, "Yte.csv")
+>>>>>>> b99232c756976c84d493376ad2dfe1586880c60e

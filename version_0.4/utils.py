@@ -12,11 +12,12 @@ __brief_utils__ = "This file contains some util methods that we used during the 
 import numpy as np
 import pandas as pd
 
-def write_predictions(predictions, out_fname='Yte.csv'):
-    '''
+
+def write_predictions(predictions, out_fname="Yte.csv"):
+    """
     @param predictions: Numpy array which contains all the results that our model has predicted.
     @param out_fname: Name of the file to store the results by default is Yte.csv
-    '''
+    """
     data = [[int(np.abs((pred + 1) // 2))] for i, pred in enumerate(predictions)]
     data = np.concatenate([[["Bound"]], data])
 
@@ -24,9 +25,10 @@ def write_predictions(predictions, out_fname='Yte.csv'):
     data_frame.index.name = "Id"
     data_frame.to_csv(out_fname)
 
+
 def score(predict, yreal):
-    '''
+    """
     @param predict; Numpy array with all the results that our model has predicted.
     @param yreal: Numpy array with the real labels of the sequences.
-    '''
+    """
     return sum([int(predict[i] == yreal[i]) for i in range(len(yreal))]) / len(yreal)
