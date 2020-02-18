@@ -207,7 +207,7 @@ if __name__ == "__main__":
     mismatch = [[0], [1], [1, 1, 1, 1, 1, 1, 1], [1, 1], [1], [0, 0, 0], \
         [1, 1, 1], [1], [1]]
     lambdas = [0.001, 0.5, 0.001, 0.8, 0.000001, 0.001, 0.001, 1e-12, 0.001]
-    kernels = [scalar_product, scalar_product, scalar_product, \
+    kernels = [scalar_product, gaussian, scalar_product, \
         scalar_product, scalar_product, scalar_product, \
             scalar_product, scalar_product, scalar_product]
     predictions = predict_dataset(dataset_numbers, kmer_length, mismatch, lambdas, \
