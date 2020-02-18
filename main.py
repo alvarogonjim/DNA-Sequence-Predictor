@@ -119,7 +119,7 @@ def predict_dataset(dataset_numbers, kmer_length, mismatch, lambdas, \
 
             # Check if the gram matrix was already computed
             file_name = "precomputed"+current_dataset_number+"/" \
-                +str(validation)+"_"+str(k[step])+"_"+str(m[step])+"_"+str(l)
+                +str(validation)+"_"+str(k[step])+"_"+str(m[step])
 
             print(style.italic + style.blue + "\tCompute kmers: length=" \
                 + str(k[step]) + ", mismatch=" + str(m[step]) + style.normal)
@@ -166,7 +166,8 @@ def predict_dataset(dataset_numbers, kmer_length, mismatch, lambdas, \
             print("\t\tScore: "+ sc + "%")
             f = open("score.txt", "a+")
             f.write("SCORE = " + sc)
-            f.write(" $ Validation = " + str(validation) + " |")
+            f.write(" $ Dataset: " + current_dataset_number + " - Validation = " \
+                + str(validation) + " |")
             for i in range(len(k)):
                 f.write(" k " + str(k[i]) + ", m " + str(m[i]))
             f.write(" | lambda = " + str(l) + "\n")
@@ -198,15 +199,17 @@ def save_result(predictions, name):
 ''' Make some benchmark '''
 if __name__ == "__main__":
     ############ Predictions ############
-    dataset_numbers = [0, 0, 1, 2, 0, 0, 0, 0, 1, 1, 1, 2]
-    kmer_length = [[10], [9, 10, 11], [9, 10, 11], [10, 11], [6, 7, 8, 9, 10, 11, 12], \
-        [10], [10], [10], [10], [9, 10], [10, 11], [10]]
-    mismatch = [[1], [1, 1, 1], [1, 1, 1], [1, 1], [1, 1, 1, 1, 1, 1, 1], [1], [1], \
-        [1], [1], [1, 1], [1, 1], [1]]
-    lambdas = [0.000001, 0.000001, 0.000001, 0.000001, 0.000001, 0.00000001, 0.001, \
-        0.5, 0.000001, 0.000001, 0.000001, 0.000001]
-    predictions = predict_dataset(dataset_numbers, kmer_length, mismatch, lambdas)
+    dataset_numbers = [0, 1, 2]
+    kmer_length = [[10], [10], [10, 11]]
+    mismatch = [[1], [1], [1, 1]]
+    lambdas = [0.4, 0.45, 0.3]
+    # dataset_numbers = [0]
+    # kmer_length = [[6]]
+    # mismatch = [[1]]
+    # lambdas = [0.000001]
+    predictions = predict_dataset(dataset_numbers, kmer_length, mismatch, lambdas, \
+        validation=0, shuffle=True)
 
     ############ Save results ############
-    submit = predictions[1] + predictions[2] + predictions[3]
+    submit = predictions[0] + predictions[1] + predictions[2]
     save_result(submit, "Yte_GONZALEZ_LAURENDEAU_kaggle_submission.csv")

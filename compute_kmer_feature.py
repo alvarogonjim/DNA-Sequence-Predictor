@@ -159,7 +159,6 @@ def compute_kmer_feature(train_set, validation_set, test_set, k, m=0):
             Default = 0 --> exact k-mer subsequences
     """
     letters = ['A', 'T', 'C', 'G'] # DNA letters
-    letters = ['G', 'A', 'T', 'C'] # DNA letters
     # List all possible k-mer of length k according to the 4 DNA letters
     full_kmer = []
     n = len(letters)

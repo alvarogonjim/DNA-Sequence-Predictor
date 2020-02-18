@@ -1,0 +1,12 @@
+SCORE = 71.2 $ Validation = 24 | k 10, m 1 | lambda = 1e-06
+SCORE = 71.89999999999999 $ Validation = 24 | k 9, m 1 k 10, m 1 k 11, m 1 | lambda = 1e-06
+SCORE = 66.7 $ Validation = 24 | k 9, m 1 k 10, m 1 k 11, m 1 | lambda = 1e-06
+SCORE = 64.60000000000001 $ Validation = 24 | k 10, m 1 k 11, m 1 | lambda = 1e-06
+SCORE = 71.2 $ Validation = 24 | k 10, m 1 | lambda = 1e-08
+SCORE = 71.2 $ Validation = 24 | k 10, m 1 | lambda = 0.001
+SCORE = 72.7 $ Validation = 24 | k 10, m 1 | lambda = 0.5
+SCORE = 69.0 $ Validation = 24 | k 10, m 1 | lambda = 1e-06
+SCORE = 67.10000000000001 $ Validation = 24 | k 9, m 1 k 10, m 1 | lambda = 1e-06
+SCORE = 67.30000000000001 $ Validation = 24 | k 10, m 1 k 11, m 1 | lambda = 1e-06
+SCORE = 64.0 $ Validation = 24 | k 10, m 1 | lambda = 1e-06
+SCORE = 68.10000000000001 $ Validation = 24 | k 6, m 1 k 7, m 1 k 8, m 1 k 9, m 1 k 10, m 1 k 11, m 1 k 12, m 1 | lambda = 1e-06

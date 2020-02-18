@@ -1,1 +1,43 @@
-SCORE = 71.2 $ Validation = 24 | k 10, m 1 | lambda = 1e-06
+SCORE = 67.5 $ Dataset: 0 - Validation = 24 | k 10, m 1 | lambda = 0.9
+SCORE = 71.2 $ Dataset: 0 - Validation = 24 | k 10, m 1 | lambda = 1e-06
+SCORE = 71.89999999999999 $ Dataset: 0 - Validation = 24 | k 9, m 1 k 10, m 1 k 11, m 1 | lambda = 1e-06
+SCORE = 66.7 $ Dataset: 1 - Validation = 24 | k 9, m 1 k 10, m 1 k 11, m 1 | lambda = 1e-06
+SCORE = 64.60000000000001 $ Dataset: 2 - Validation = 24 | k 10, m 1 k 11, m 1 | lambda = 1e-06
+SCORE = 71.2 $ Dataset: 0 - Validation = 24 | k 10, m 1 | lambda = 1e-08
+SCORE = 71.2 $ Dataset: 0 - Validation = 24 | k 10, m 1 | lambda = 0.001
+SCORE = 72.7 $ Dataset: 0 - Validation = 24 | k 10, m 1 | lambda = 0.5
+SCORE = 69.0 $ Dataset: 1 - Validation = 24 | k 10, m 1 | lambda = 1e-06
+SCORE = 67.10000000000001 $ Dataset: 1 - Validation = 24 | k 9, m 1 k 10, m 1 | lambda = 1e-06
+SCORE = 67.30000000000001 $ Dataset: 1 - Validation = 24 | k 10, m 1 k 11, m 1 | lambda = 1e-06
+SCORE = 64.0 $ Dataset: 2 - Validation = 24 | k 10, m 1 | lambda = 1e-06
+SCORE = 68.10000000000001 $ Dataset: 0 - Validation = 24 | k 6, m 1 k 7, m 1 k 8, m 1 k 9, m 1 k 10, m 1 k 11, m 1 k 12, m 1 | lambda = 1e-06
+SCORE = 70.8 $ Dataset: 0 - Validation = 24 | k 10, m 1 | lambda = 0.6
+SCORE = 69.6 $ Dataset: 0 - Validation = 24 | k 10, m 1 | lambda = 0.7
+SCORE = 73.5 $ Dataset: 0 - Validation = 24 | k 10, m 1 | lambda = 0.4
+SCORE = 70.0 $ Dataset: 0 - Validation = 24 | k 10, m 1 | lambda = 0.65
+SCORE = 72.89999999999999 $ Dataset: 0 - Validation = 24 | k 10, m 1 | lambda = 0.3
+SCORE = 72.89999999999999 $ Dataset: 0 - Validation = 24 | k 10, m 1 | lambda = 0.35
+SCORE = 73.3 $ Dataset: 0 - Validation = 24 | k 10, m 1 | lambda = 0.45
+SCORE = 73.5 $ Dataset: 0 - Validation = 24 | k 10, m 1 | lambda = 0.4
+SCORE = 70.6 $ Dataset: 1 - Validation = 24 | k 10, m 1 | lambda = 0.4
+SCORE = 73.5 $ Dataset: 0 - Validation = 24 | k 10, m 1 | lambda = 0.4
+SCORE = 70.6 $ Dataset: 1 - Validation = 24 | k 10, m 1 | lambda = 0.4
+SCORE = 64.4 $ Dataset: 2 - Validation = 24 | k 10, m 1 | lambda = 0.4
+SCORE = 70.6 $ Dataset: 1 - Validation = 24 | k 10, m 1 | lambda = 0.35
+SCORE = 70.8 $ Dataset: 1 - Validation = 24 | k 10, m 1 | lambda = 0.45
+SCORE = 70.6 $ Dataset: 1 - Validation = 24 | k 10, m 1 | lambda = 0.5
+SCORE = 65.0 $ Dataset: 2 - Validation = 24 | k 10, m 1 k 11, m 1 | lambda = 0.35
+SCORE = 73.3 $ Dataset: 0 - Validation = 24 | k 10, m 1 | lambda = 0.45
+SCORE = 64.60000000000001 $ Dataset: 2 - Validation = 24 | k 10, m 1 k 11, m 1 | lambda = 1e-06
+SCORE = 73.3 $ Dataset: 0 - Validation = 24 | k 10, m 1 | lambda = 0.45
+SCORE = 62.9 $ Dataset: 2 - Validation = 24 | k 10, m 1 k 11, m 1 | lambda = 0.9
+SCORE = 61.0 $ Dataset: 2 - Validation = 24 | k 10, m 1 k 11, m 1 | lambda = 3
+SCORE = 63.1 $ Dataset: 2 - Validation = 24 | k 10, m 1 k 11, m 1 | lambda = 0.6
+SCORE = 64.4 $ Dataset: 2 - Validation = 24 | k 10, m 1 | lambda = 0.4
+SCORE = 64.8 $ Dataset: 2 - Validation = 24 | k 10, m 1 k 11, m 1 | lambda = 0.4
+SCORE = 65.2 $ Dataset: 2 - Validation = 24 | k 10, m 1 k 11, m 1 | lambda = 0.3
+SCORE = 65.2 $ Dataset: 2 - Validation = 24 | k 9, m 1 k 10, m 1 | lambda = 0.4
+SCORE = 64.8 $ Dataset: 2 - Validation = 24 | k 10, m 1 k 11, m 1 | lambda = 0.25
+SCORE = 73.5 $ Dataset: 0 - Validation = 24 | k 10, m 1 | lambda = 0.4
+SCORE = 70.8 $ Dataset: 1 - Validation = 24 | k 10, m 1 | lambda = 0.45
+SCORE = 65.2 $ Dataset: 2 - Validation = 24 | k 10, m 1 k 11, m 1 | lambda = 0.3
