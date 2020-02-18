@@ -7,4 +7,3 @@ SCORE = 64.60000000000001 $ Dataset: 1 - Validation = 24 | k 10, m 0 k 11, m 0 |
 SCORE = 65.60000000000001 $ Dataset: 2 - Validation = 24 | k 9, m 1 k 10, m 1 k 11, m 1 | lambda = 0.001
 SCORE = 57.699999999999996 $ Dataset: 2 - Validation = 24 | k 3, m 1 | lambda = 1e-12
 SCORE = 64.0 $ Dataset: 2 - Validation = 24 | k 10, m 1 | lambda = 0.001
-SCORE = 68.30000000000001 $ Dataset: 0 - Validation = 24 | k 10, m 0 | lambda = 0.001
