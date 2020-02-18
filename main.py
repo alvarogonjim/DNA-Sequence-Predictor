@@ -36,17 +36,9 @@ from get_dataset import get_dataset
 
 """ Create features in train, validation and test set """
 from compute_kmer_feature import compute_kmer_feature
-<<<<<<< HEAD
-
-""" Define kernel methods """
-from kernels import gram_matrix, scalar_product, sparse_gaussian
-
-""" Build SVM model """
-=======
 ''' Define kernel methods '''
 from kernels import gram_matrix, scalar_product, sparse_gaussian, gaussian
 ''' Build SVM model '''
->>>>>>> b99232c756976c84d493376ad2dfe1586880c60e
 from svm import SVM, score
 
 # Fancy print in the console
@@ -92,20 +84,8 @@ print(
 )
 
 ############ Main functions ############
-<<<<<<< HEAD
-def predict_dataset(
-    dataset_numbers,
-    kmer_length,
-    mismatch,
-    lambdas,
-    truncation=-1,
-    shuffle=False,
-    validation=24,
-):
-=======
 def predict_dataset(dataset_numbers, kmer_length, mismatch, lambdas, kernels, \
     truncation = -1, shuffle = False, validation = 24):
->>>>>>> b99232c756976c84d493376ad2dfe1586880c60e
     """
     Function to predict the label on the datasets with different 
     hyperparameters. 
@@ -134,16 +114,10 @@ def predict_dataset(dataset_numbers, kmer_length, mismatch, lambdas, kernels, \
         )
 
         # Get hyperparameter
-<<<<<<< HEAD
-        k = kmer_length[pred_i]  # the different length of kmer
-        m = mismatch[pred_i]  # number of the different mismatch allowed
-        l = lambdas[pred_i]  # regularization parameter
-=======
         k = kmer_length[pred_i] # the different length of kmer
         m = mismatch[pred_i] # number of the different mismatch allowed
         l = lambdas[pred_i] # regularization parameter
         kernel = kernels[pred_i] # kernel
->>>>>>> b99232c756976c84d493376ad2dfe1586880c60e
 
         # Initialization of the gram matrix
         gm = 0
@@ -167,34 +141,11 @@ def predict_dataset(dataset_numbers, kmer_length, mismatch, lambdas, kernels, \
         for step in range(len(k)):
 
             # Check if the gram matrix was already computed
-<<<<<<< HEAD
-            file_name = (
-                "precomputed"
-                + current_dataset_number
-                + "/"
-                + str(validation)
-                + "_"
-                + str(k[step])
-                + "_"
-                + str(m[step])
-            )
-
-            print(
-                style.italic
-                + style.blue
-                + "\tCompute kmers: length="
-                + str(k[step])
-                + ", mismatch="
-                + str(m[step])
-                + style.normal
-            )
-=======
             file_name = "precomputed"+current_dataset_number+"/" \
                 +str(validation)+"_"+str(k[step])+"_"+str(m[step])+str(kernel)[10:18]
 
             print(style.italic + style.blue + "\tCompute kmers: length=" \
                 + str(k[step]) + ", mismatch=" + str(m[step]) + style.normal)
->>>>>>> b99232c756976c84d493376ad2dfe1586880c60e
 
             if not path.exists(file_name):
                 (
@@ -206,14 +157,8 @@ def predict_dataset(dataset_numbers, kmer_length, mismatch, lambdas, kernels, \
                 )
 
                 print("\t\tComputing Gram matrix: ", end="")
-<<<<<<< HEAD
-                actual_gm = gram_matrix(
-                    train_set_kmer, validation_set_kmer, test_set_kmer, scalar_product
-                )
-=======
                 actual_gm = gram_matrix(train_set_kmer, validation_set_kmer, \
                     test_set_kmer, kernel)
->>>>>>> b99232c756976c84d493376ad2dfe1586880c60e
                 print("\r\t\tGram matrix computed.       ")
 
                 np.savetxt(file_name, actual_gm)
@@ -287,19 +232,6 @@ def save_result(predictions, name):
 """ Make some benchmark """
 if __name__ == "__main__":
     ############ Predictions ############
-<<<<<<< HEAD
-    dataset_numbers = [0, 1, 2]
-    kmer_length = [[10], [10], [10, 11]]
-    mismatch = [[1], [1], [1, 1]]
-    lambdas = [0.4, 0.45, 0.3]
-    # dataset_numbers = [0]
-    # kmer_length = [[6]]
-    # mismatch = [[1]]
-    # lambdas = [0.000001]
-    predictions = predict_dataset(
-        dataset_numbers, kmer_length, mismatch, lambdas, validation=0, shuffle=True
-    )
-=======
     dataset_numbers = [0, 0, 0, 1, 1, 1, 2, 2, 2]
     kmer_length = [[10], [10], [6, 7, 8, 9, 10, 11, 12], [9, 10], [10], \
         [10, 11], [9, 10, 11], [3], [10]]
@@ -311,7 +243,6 @@ if __name__ == "__main__":
             scalar_product, scalar_product, scalar_product]
     predictions = predict_dataset(dataset_numbers, kmer_length, mismatch, lambdas, \
         kernels, truncation = -1, shuffle = False, validation = 24)
->>>>>>> b99232c756976c84d493376ad2dfe1586880c60e
 
     ############ Save results ############
     submit = predictions[0] + predictions[1] + predictions[2]
