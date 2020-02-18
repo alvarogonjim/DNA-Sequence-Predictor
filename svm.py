@@ -62,15 +62,12 @@ class SVM:
         @param: K: numpy array - kernel
         """
         predictions = []
-        # assert False, np.shape(K)[1]
         for i in range(np.shape(K)[0]):
-            # print("i", i)
             pred = 0
             for k, j in enumerate(range(np.shape(K)[1])):
-                # print("k", k, "j", j)
-                # print(K[i, j])
                 pred += self.alpha[k] * K[i, j]
-            # assert(False)
+            if pred == 0:
+                pred = 1
             predictions.append(np.sign(pred))
         return predictions
 

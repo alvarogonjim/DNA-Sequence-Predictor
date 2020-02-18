@@ -19,6 +19,8 @@ so we limit ourself to use only common libraries in python as following.
 We have the right to work with some linear algebra and optimization libraries.
 """
 
+from os import path
+
 # Pre-installed library: (python3 -m pip install ...)
 import numpy as np # for arrays operations
 from itertools import combinations, product # for list operations
@@ -67,88 +69,169 @@ print(style.mono + "\nThe study has three different datasets which we treat " \
     + "console, as well as the specific parameters for each datasets.\n" \
     + style.underline + __author__ + " | " + __date__ + style.normal)
 
+############ Main functions ############
+def predict_dataset(dataset_numbers, kmer_length, mismatch, lambdas):
+    """
+    Function to predict the label on the datasets with different 
+    hyperparameters. 
+    @param: dataset_numbers: numpy array of int - number of the datasets {0,1,2}
+            kmer_length: numpy array of numpy array of int - length of the 
+            different kmers to use for one dataset
+            mismatch: numpy array of numpy array of int - number of mismatchs 
+            allowed for one dataset
+            lambdas: numpy array of int - regularization parameter
+    """
 
-# ############ Dataset 0 ############
-# print(style.bold + style.red + "Dataset 0" + style.normal)
+    # General parameter
+    truncation = -1 # number of data to use. -1 --> use all data
+    shuffle = True # whether shuffle the data
+    validation = 24 # split data in training and validation set following this percent
 
-# # Parameters
-# file_number = "0" # for the name of the files to read this dataset
-# truncation = -1 # number of data to read. -1 --> get all data
-# s = False # whether shuffle the data
-# v = 0 # split data in training and validation set following this percent
-# k = 9 # length of the kmer start
-# m = 1 # number of mismatch allowed
-# N = 3 # number of gram matrix to compute
-# # Initialization of the gram matrix
-# gm = 0
-# l = 0.000001 # regularization parameter
+    # Prepare return
+    predictions = []
 
-# # Loading data
-# print(style.italic + style.blue + "\tBuild datasets" + style.normal)
-# train_set, validation_set, test_set, label = get_dataset(file_number, \
-#     folder="data/",trunc=truncation, shuffle=s,valid=v)
-# label_training = np.array(label.iloc[pd.Index(label.index).get_indexer(train_set.index)])
-# label_validation = np.array(label.iloc[pd.Index(label.index).get_indexer(validation_set.index)])
+    for pred_i in range(len(dataset_numbers)):
 
-# for step in range(N):
-#     print(style.italic + style.blue + "\tCompute kmers: length=" + str(k+step) \
-#         + ", mismatch=" + str(m) + style.normal)
-#     train_set_kmer, validation_set_kmer, test_set_kmer = \
-#         compute_kmer_feature(train_set, validation_set, test_set, k+step, m)
+        current_dataset_number = str(dataset_numbers[pred_i])
 
-#     print("\t\tComputing Gram matrix: ", end="")
-#     gm += gram_matrix(train_set_kmer, validation_set_kmer, \
-#         test_set_kmer, scalar_product)
-#     print("\r\t\tGram matrix computed.       ")
+        print(style.bold + style.red + "Dataset " + \
+            current_dataset_number + style.normal)
+
+        # Get hyperparameter
+        k = kmer_length[pred_i] # the different length of kmer
+        m = mismatch[pred_i] # number of the different mismatch allowed
+        l = lambdas[pred_i] # regularization parameter
+
+        # Initialization of the gram matrix
+        gm = 0
+
+        # Loading data
+        print(style.italic + style.blue + "\tBuild datasets" + style.normal)
+        train_set, validation_set, test_set, label = get_dataset(current_dataset_number, \
+            folder="data/",trunc=truncation, shuffle=shuffle,valid=validation)
+        label_training = np.array(label.iloc[ \
+            pd.Index(label.index).get_indexer(train_set.index)])
+        label_validation = np.array(label.iloc[ \
+            pd.Index(label.index).get_indexer(validation_set.index)])
+
+        for step in range(len(k)):
+
+            # Check if the gram matrix was already computed
+            file_name = "precomputed"+current_dataset_number+"/" \
+                +str(validation)+"_"+str(k[step])+"_"+str(m[step])+"_"+str(l)
+
+            print(style.italic + style.blue + "\tCompute kmers: length=" \
+                + str(k[step]) + ", mismatch=" + str(m[step]) + style.normal)
+
+            if not path.exists(file_name):
+                train_set_kmer, validation_set_kmer, test_set_kmer = \
+                    compute_kmer_feature(train_set, validation_set, test_set, \
+                        k[step], m[step])
+
+                print("\t\tComputing Gram matrix: ", end="")
+                actual_gm = gram_matrix(train_set_kmer, validation_set_kmer, \
+                    test_set_kmer, scalar_product)
+                print("\r\t\tGram matrix computed.       ")
+
+                np.savetxt(file_name,actual_gm)
+            
+            else:
+                actual_gm = np.loadtxt(file_name)
+                print("\r\t\tGram matrix loaded.")
+
+            gm += actual_gm
 
 
-# # Reshape data
-# train_set_gm = gm[:train_set.shape[0],:train_set.shape[0]]
-# validation_set_gm = gm[train_set.shape[0]:-test_set.shape[0],:train_set.shape[0]]
-# test_set_gm = gm[-test_set.shape[0]:,:train_set.shape[0]]
-# label_training = np.squeeze(label_training)
-# label_validation = np.squeeze(label_validation)
+        # Reshape data
+        train_set_gm = gm[:train_set.shape[0],:train_set.shape[0]]
+        validation_set_gm = gm[train_set.shape[0]:-test_set.shape[0],:train_set.shape[0]]
+        test_set_gm = gm[-test_set.shape[0]:,:train_set.shape[0]]
+        label_training = np.squeeze(label_training)
+        label_validation = np.squeeze(label_validation)
 
-# # Train SVM model
-# print(style.italic + style.blue + "\tTrain SVM model" + style.normal)
-# print("\t\tLambda = " + str(l))
-# model0 = SVM(l)
-# alpha0 = model0.fit(train_set_gm, label_training)
+        # Train SVM model
+        print(style.italic + style.blue + "\tTrain SVM model" + style.normal)
+        print("\t\tLambda = " + str(l))
+        model = SVM(l)
+        alpha = model.fit(train_set_gm, label_training)
 
-# if  not validation_set.empty:
-#     # Compute the performances on the validation set
-#     print("\t\tCompute the performances on the validation set")
-#     predictions_valid = model0.predict(validation_set_gm)
+        if  not validation_set.empty:
+            # Compute the performances on the validation set
+            print("\t\tCompute the performances on the validation set")
+            predictions_valid = model.predict(validation_set_gm)
 
-#     print("\t\tScore: "+ \
-#         str(round(score(predictions_valid, label_validation),3)*100) + "%")
+            # Score
+            sc = str(round(score(predictions_valid, label_validation),3)*100)
+            print("\t\tScore: "+ sc + "%")
+            f = open("score.txt", "a+")
+            f.write("SCORE = " + sc)
+            f.write(" $ Validation = " + str(validation) + " |")
+            for i in range(len(k)):
+                f.write(" k " + str(k[i]) + ", m " + str(m[i]))
+            f.write(" | lambda = " + str(l) + "\n")
+            f.close()
 
-# # Predict on test set
-# print(style.italic + style.blue + "\tPredict on test set" + style.normal)
-# predictions_0 = model0.predict(test_set_gm)
+        # Predict on test set
+        print(style.italic + style.blue + "\tPredict on test set" + style.normal)
+        predictions += [model.predict(test_set_gm)]
 
-# # # If want to stop for predictions on Dataset0:
-# # print(predictions_0)
-# # assert(False)
+    return predictions
+
+
+def save_result(predictions, name):
+    """
+    Save the predictions under the Kaggle format scheme
+    @param: predictions: list of {0, 1} - predictions done
+            name: string - name of the file to save
+    """
+    print(style.bold + style.red + "Final results" + style.normal)
+    final_predictions = predictions
+    final_predictions = pd.DataFrame({"Bound": final_predictions})
+    final_predictions = (final_predictions+1)/2
+    final_predictions.index.name = "Id"
+    final_predictions.to_csv(name, sep=",", encoding="utf-8", index=True)
+    print(style.italic + style.blue + "\tPrediction saved under " \
+        + name + style.normal)
+
+
+############ Predictions ############
+dataset_numbers = [0, 0, 1, 2, 0, 0, 0, 0, 1, 1, 1, 2]
+kmer_length = [[10], [9, 10, 11], [9, 10, 11], [10, 11], [6, 7, 8, 9, 10, 11, 12], \
+    [10], [10], [10], [10], [9, 10], [10, 11], [10]]
+mismatch = [[1], [1, 1, 1], [1, 1, 1], [1, 1], [1, 1, 1, 1, 1, 1, 1], [1], [1], \
+    [1], [1], [1, 1], [1, 1], [1]]
+lambdas = [0.000001, 0.000001, 0.000001, 0.000001, 0.000001, 0.00000001, 0.001, \
+    0.5, 0.000001, 0.000001, 0.000001, 0.000001]
+predictions = predict_dataset(dataset_numbers, kmer_length, mismatch, lambdas)
+
+############ Save results ############
+submit = predictions[1] + predictions[2] + predictions[3]
+save_result(submit, "Yte_GONZALEZ_LAURENDEAU_kaggle_submission.csv")
+
+
+
+# # If want to stop for predictions on Dataset0:
+# print(predictions_0)
+# assert(False)
 
 # ############ Dataset 1 ############
 # print(style.bold + style.red + "Dataset 1" + style.normal)
 
 # # Parameters
-# file_number = "1" # for the name of the files to read this dataset
+# dataset_number = "1" # for the name of the files to read this dataset
 # truncation = -1 # number of data to read. -1 --> get all data
 # s = False # whether shuffle the data
 # v = 0 # split data in training and validation set following this percent
 # k = 9 # length of the kmer start
 # m = 1 # number of mismatch allowed
 # N = 3 # number of gram matrix to compute
+# l = 0.000001 # regularization parameter
 # # Initialization of the gram matrix
 # gm = 0
-# l = 0.000001 # regularization parameter
 
 # # Loading data
 # print(style.italic + style.blue + "\tBuild datasets" + style.normal)
-# train_set, validation_set, test_set, label = get_dataset(file_number, \
+# train_set, validation_set, test_set, label = get_dataset(dataset_number, \
 #     folder="data/",trunc=truncation, shuffle=s,valid=v)
 # label_training = np.array(label.iloc[pd.Index(label.index).get_indexer(train_set.index)])
 # label_validation = np.array(label.iloc[pd.Index(label.index).get_indexer(validation_set.index)])
@@ -191,75 +274,75 @@ print(style.mono + "\nThe study has three different datasets which we treat " \
 # predictions_1 = model1.predict(test_set_gm)
 
 
-############ Dataset 2 ############
-print(style.bold + style.red + "Dataset 2" + style.normal)
+# ############ Dataset 2 ############
+# print(style.bold + style.red + "Dataset 2" + style.normal)
 
-# Parameters
-file_number = "2" # for the name of the files to read this dataset
-truncation = -1 # number of data to read. -1 --> get all data
-s = False # whether shuffle the data
-v = 0 # split data in training and validation set following this percent
-k = 10 # length of the kmer start
-m = 1 # number of mismatch allowed
-N = 2 # number of gram matrix to compute
-# Initialization of the gram matrix
-gm = 0
-l = 0.000001 # regularization parameter
+# # Parameters
+# dataset_number = "2" # for the name of the files to read this dataset
+# truncation = -1 # number of data to read. -1 --> get all data
+# s = False # whether shuffle the data
+# v = 0 # split data in training and validation set following this percent
+# k = 10 # length of the kmer start
+# m = 1 # number of mismatch allowed
+# N = 2 # number of gram matrix to compute
+# l = 0.000001 # regularization parameter
+# # Initialization of the gram matrix
+# gm = 0
 
-# Loading data
-print(style.italic + style.blue + "\tBuild datasets" + style.normal)
-train_set, validation_set, test_set, label = get_dataset(file_number, \
-    folder="data/",trunc=truncation, shuffle=s,valid=v)
-label_training = np.array(label.iloc[pd.Index(label.index).get_indexer(train_set.index)])
-label_validation = np.array(label.iloc[pd.Index(label.index).get_indexer(validation_set.index)])
+# # Loading data
+# print(style.italic + style.blue + "\tBuild datasets" + style.normal)
+# train_set, validation_set, test_set, label = get_dataset(dataset_number, \
+#     folder="data/",trunc=truncation, shuffle=s,valid=v)
+# label_training = np.array(label.iloc[pd.Index(label.index).get_indexer(train_set.index)])
+# label_validation = np.array(label.iloc[pd.Index(label.index).get_indexer(validation_set.index)])
 
-for step in range(N):
-    print(style.italic + style.blue + "\tCompute kmers: length=" + str(k+step) \
-        + ", mismatch=" + str(m) + style.normal)
-    train_set_kmer, validation_set_kmer, test_set_kmer = \
-        compute_kmer_feature(train_set, validation_set, test_set, k+step, m)
+# for step in range(N):
+#     print(style.italic + style.blue + "\tCompute kmers: length=" + str(k+step) \
+#         + ", mismatch=" + str(m) + style.normal)
+#     train_set_kmer, validation_set_kmer, test_set_kmer = \
+#         compute_kmer_feature(train_set, validation_set, test_set, k+step, m)
 
-    print("\t\tComputing Gram matrix: ", end="")
-    gm += gram_matrix(train_set_kmer, validation_set_kmer, \
-        test_set_kmer, scalar_product)
-    print("\r\t\tGram matrix computed.       ")
-
-
-# Reshape data
-train_set_gm = gm[:train_set.shape[0]][:,:train_set.shape[0]]
-validation_set_gm = gm[train_set.shape[0]:-test_set.shape[0],:train_set.shape[0]]
-test_set_gm = gm[-test_set.shape[0]:,:train_set.shape[0]]
-label_training = np.squeeze(label_training)
-label_validation = np.squeeze(label_validation)
-
-# Train SVM model
-print(style.italic + style.blue + "\tTrain SVM model" + style.normal)
-print("\t\tLambda = " + str(l))
-model2 = SVM(l)
-alpha2 = model2.fit(train_set_gm, label_training)
-
-if  not validation_set.empty:
-    # Compute the performances on the validation set
-    print("\t\tCompute the performances on the validation set")
-    predictions_valid = model2.predict(validation_set_gm)
-
-    print("\t\tScore: "+ \
-        str(round(score(predictions_valid, label_validation),3)*100) + "%")
-
-# Predict on test set
-print(style.italic + style.blue + "\tPredict on test set" + style.normal)
-predictions_2 = model2.predict(test_set_gm)
+#     print("\t\tComputing Gram matrix: ", end="")
+#     gm += gram_matrix(train_set_kmer, validation_set_kmer, \
+#         test_set_kmer, scalar_product)
+#     print("\r\t\tGram matrix computed.       ")
 
 
+# # Reshape data
+# train_set_gm = gm[:train_set.shape[0]][:,:train_set.shape[0]]
+# validation_set_gm = gm[train_set.shape[0]:-test_set.shape[0],:train_set.shape[0]]
+# test_set_gm = gm[-test_set.shape[0]:,:train_set.shape[0]]
+# label_training = np.squeeze(label_training)
+# label_validation = np.squeeze(label_validation)
 
-############ Final results ############
-print(style.bold + style.red + "Final results" + style.normal)
-final_predicitons = predictions_2
-final_predicitons = pd.DataFrame({"Bound": final_predicitons})
-final_predicitons = (final_predicitons+1)/2
-final_predicitons.index.name = "Id"
-title = "Yte_GONZALEZ_LAURENDEAU_kaggle_submission12.csv"
-final_predicitons.to_csv(title, \
-    sep=",", encoding="utf-8", index=True)
-print(style.italic + style.blue + "\tPrediction saved under " \
-    + title + style.normal)
+# # Train SVM model
+# print(style.italic + style.blue + "\tTrain SVM model" + style.normal)
+# print("\t\tLambda = " + str(l))
+# model2 = SVM(l)
+# alpha2 = model2.fit(train_set_gm, label_training)
+
+# if  not validation_set.empty:
+#     # Compute the performances on the validation set
+#     print("\t\tCompute the performances on the validation set")
+#     predictions_valid = model2.predict(validation_set_gm)
+
+#     print("\t\tScore: "+ \
+#         str(round(score(predictions_valid, label_validation),3)*100) + "%")
+
+# # Predict on test set
+# print(style.italic + style.blue + "\tPredict on test set" + style.normal)
+# predictions_2 = model2.predict(test_set_gm)
+
+
+
+# ############ Final results ############
+# print(style.bold + style.red + "Final results" + style.normal)
+# final_predicitons = predictions
+# final_predicitons = pd.DataFrame({"Bound": final_predicitons})
+# final_predicitons = (final_predicitons+1)/2
+# final_predicitons.index.name = "Id"
+# title = "Yte_GONZALEZ_LAURENDEAU_kaggle_submission12.csv"
+# final_predicitons.to_csv(title, \
+#     sep=",", encoding="utf-8", index=True)
+# print(style.italic + style.blue + "\tPrediction saved under " \
+#     + title + style.normal)
