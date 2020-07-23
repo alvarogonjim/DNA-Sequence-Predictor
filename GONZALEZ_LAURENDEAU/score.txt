@@ -1,0 +1,9 @@
+SCORE = 68.30000000000001 $ Dataset: 0 - Validation = 24 | k 10, m 0 | lambda = 0.001
+SCORE = 72.7 $ Dataset: 0 - Validation = 24 | k 10, m 1 | lambda = 0.5
+SCORE = 68.10000000000001 $ Dataset: 0 - Validation = 24 | k 6, m 1 k 7, m 1 k 8, m 1 k 9, m 1 k 10, m 1 k 11, m 1 k 12, m 1 | lambda = 0.001
+SCORE = 70.19999999999999 $ Dataset: 1 - Validation = 24 | k 9, m 1 k 10, m 1 | lambda = 0.8
+SCORE = 69.0 $ Dataset: 1 - Validation = 24 | k 10, m 1 | lambda = 1e-06
+SCORE = 64.60000000000001 $ Dataset: 1 - Validation = 24 | k 10, m 0 k 11, m 0 | lambda = 0.001
+SCORE = 65.60000000000001 $ Dataset: 2 - Validation = 24 | k 9, m 1 k 10, m 1 k 11, m 1 | lambda = 0.001
+SCORE = 57.699999999999996 $ Dataset: 2 - Validation = 24 | k 3, m 1 | lambda = 1e-12
+SCORE = 64.0 $ Dataset: 2 - Validation = 24 | k 10, m 1 | lambda = 0.001
